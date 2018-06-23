@@ -1,0 +1,211 @@
+<link href='<?php echo $this->view_dir ?>assets/css/style.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='<?php echo $this->view_dir ?>assets/js/scripts.js'></script>
+
+<div class='module-messages'>
+    <?php foreach ($messages as $type => $messagesByType): ?>
+        <?php foreach ($messagesByType as $message): ?>
+            <div class='alert alert-<?= $type ?>'><?= $message ?></div>
+        <?php endforeach ?>
+    <?php endforeach ?>
+</div>
+
+<div class='row'>
+    <div class='col-md-12'>
+        <h3 style='margin-top: 0'><?php echo $this->_('certificate_contact_details') ?></h3>
+    </div>
+</div>
+
+<br/<br/>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('admin_first_name') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['admin_firstname'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('admin_last_name') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['admin_lastname'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('admin_organization_name') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['admin_organization'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('admin_job_title') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['admin_title'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('admin_email') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['admin_email'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('admin_address1') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['admin_addressline1'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('admin_address2') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['admin_addressline2'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('admin_city') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['admin_city'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('admin_state') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['admin_region'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('admin_zipcode') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['admin_postalcode'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('admin_country') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['admin_country'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('admin_phone_number') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['admin_phone'] ?></strong>
+    </div>
+</div>
+
+<br/<br/>
+<div class='row'>
+    <div class='col-md-12'>
+        <h3 style='margin-top: 0'><?php echo $this->_('certificate_tech_contact_details') ?></h3>
+    </div>
+</div>
+
+<br/<br/>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('tech_firstname') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['tech_firstname'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('tech_lastname') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['tech_lastname'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('tech_organization') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['tech_organization'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('tech_title') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['tech_title'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('tech_email') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['tech_email'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('tech_addressline1') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['tech_addressline1'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('tech_city') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['tech_city'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('tech_postalcode') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['tech_postalcode'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('tech_region') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['tech_region'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('tech_country') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['tech_country'] ?></strong>
+    </div>
+</div>
+<div class='row row-margin'>
+    <div class='col-sm-4 text-right'>
+        <?php echo $this->_('tech_fax') ?>
+    </div>
+    <div class='col-sm-8'>
+        <strong><?php echo $orderData['tech_fax'] ?></strong>
+    </div>
+</div>

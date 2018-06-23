@@ -1,0 +1,164 @@
+<?php
+    $this->Widget->clear();
+    $this->Widget->setStyleSheet($this->view_dir . 'assets/css/style.css');
+    $this->Widget->create($this->_('products_creator', true), array('id' => "manage_thesslstore"));
+?>
+
+<script type='text/javascript' src='<?php echo $this->view_dir ?>assets/js/scripts.js'></script>
+
+<div class='module-messages'>
+    <?php foreach ($messages as $type => $messagesByType): ?>
+        <?php foreach ($messagesByType as $message): ?>
+            <div class='alert alert-<?= $type ?>'><?= $message ?></div>
+        <?php endforeach ?>
+    <?php endforeach ?>
+</div>
+
+<div class='inner' style='padding-top: 0'>
+    <a href='<?php echo $moduleConfHref ?>' class='btn btn-default pull-right'>
+        <?= $this->_('back_to_module_configuration') ?>
+    </a>
+    <br/><br/>
+
+    <div class='title_row first'>
+        <h3><?= $this->_('single_products_creator') ?></h3>
+    </div>
+
+    <div class='pad'>
+        <?php $this->Form->create() ?>
+
+        <ul>
+            <li>
+                <?php
+                    $this->Form->label($this->_('go_getssl_product', true), 'go_getssl_product');
+                    $this->Form->fieldSelect('go_getssl_product', $products);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('product_name', true), 'product_name');
+                    $this->Form->fieldText('product_name');
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('package_groups', true), 'package_groups[]');
+                    $this->Form->fieldSelect('package_groups[]', $packageGroups, null, [
+                        'multiple' => 'multiple'
+                    ]);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('enable_sans', true), 'enable_sans');
+                    $this->Form->fieldCheckbox('enable_sans', 1);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('included_sans', true), 'included_sans');
+                    $this->Form->fieldText('included_sans');
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('pay_type', true), 'pay_type');
+                    $this->Form->fieldSelect('pay_type', $pricingPeriods, null, [
+                        'class' => 'pay-type-select'
+                    ]);
+                ?>
+            </li>
+            <li>
+                <div class='product-pricing'>
+                    <?php $this->Form->label($this->_('pricing', true), 'pricing') ?>
+
+                    <?php $index = 1 ?>
+                    <?php foreach ($currencies as $currency): ?>
+                        <div class='pricing-in-currency'>
+                            <div class='currency-code'><?php echo $currency ?></div>
+                            <div class='pricing'>
+                                <div class='row'>
+                                    <div class='col s2 text-right'>&nbsp;</div>
+                                    <div class='col s3 text-center font-bold'><?php echo $this->_('one_time_monthly', true) ?></div>
+                                    <div class='col s3 text-center font-bold'><?php echo $this->_('annually', true) ?></div>
+                                    <div class='col s3 text-center font-bold'><?php echo $this->_('biennially', true) ?></div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col s2 text-right'><?php echo $this->_('setup_fee', true) ?></div>
+                                    <div class='col s3 period-setup-fee-price' data-period='monthly'><?php echo $this->Form->fieldText('pricing[' . $currency . '][monthly][setup_fee]') ?></div>
+                                    <div class='col s3 period-setup-fee-price' data-period='annually'><?php echo $this->Form->fieldText('pricing[' . $currency . '][annually][setup_fee]') ?></div>
+                                    <div class='col s3 period-setup-fee-price' data-period='biennially'><?php echo $this->Form->fieldText('pricing[' . $currency . '][biennially][setup_fee]') ?></div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col s2 text-right'><?php echo $this->_('price', true) ?></div>
+                                    <div class='col s3 period-price' data-period='monthly'><?php echo $this->Form->fieldText('pricing[' . $currency . '][monthly][price]') ?></div>
+                                    <div class='col s3 period-price' data-period='annually'><?php echo $this->Form->fieldText('pricing[' . $currency . '][annually][price]') ?></div>
+                                    <div class='col s3 period-price' data-period='biennially'><?php echo $this->Form->fieldText('pricing[' . $currency . '][biennially][price]') ?></div>
+                                </div>
+                                <div class='row'>
+                                    <div class='col s2 text-right'><?php echo $this->_('enable', true) ?></div>
+                                    <div class='col s3 text-center'>
+                                        <?php echo $this->Form->fieldCheckbox('pricing[' . $currency . '][monthly][enable]', 1, false, [
+                                            'data-period' => 'monthly',
+                                            'class'       => 'enable-price-period'
+                                        ]) ?>
+                                    </div>
+                                    <div class='col s3 text-center'>
+                                        <?php echo $this->Form->fieldCheckbox('pricing[' . $currency . '][annually][enable]', 1, false, [
+                                            'data-period' => 'annually',
+                                            'class'       => 'enable-price-period',
+                                        ]) ?>
+                                    </div>
+                                    <div class='col s3 text-center'>
+                                        <?php echo $this->Form->fieldCheckbox('pricing[' . $currency . '][biennially][enable]', 1, false, [
+                                            'data-period' => 'biennially',
+                                            'class'       => 'enable-price-period',
+                                        ]) ?>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <?php if ($index++ < count($currencies)): ?>
+                            <div class='separator'></div>
+                        <?php endif ?>
+                    <?php endforeach ?>
+                </div>
+            </li>
+        </ul>
+
+        <div class='button_row'>
+            <button type='submit' class='pull-left btn btn-primary submit' name='post_action' value='single'><?php $this->_('create_single_product') ?></button>
+        </div>
+
+        <?php $this->Form->end() ?>
+    </div>
+
+    <br/><br/>
+    <div class='title_row first'>
+        <h3><?= $this->_('multiple_products_creator') ?></h3>
+    </div>
+
+    <div class='pad'>
+        <?php $this->Form->create() ?>
+
+        <ul>
+            <li>
+                <?php
+                    $this->Form->label($this->_('package_groups', true), 'package_groups[]');
+                    $this->Form->fieldSelect('package_groups[]', $packageGroups, null, [
+                        'multiple' => 'multiple'
+                    ]);
+                ?>
+            </li>
+        </ul>
+
+        <div class='button_row'>
+            <button type='submit' class='pull-left btn btn-primary submit' name='post_action' value='multiple'><?php $this->_('create_multiple_products') ?></button>
+        </div>
+
+        <?php $this->Form->end() ?>
+    </div>
+</div>
+
+<?php $this->Widget->end() ?>

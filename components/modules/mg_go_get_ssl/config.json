@@ -1,0 +1,19 @@
+{
+  "version": "1.0.0",
+  "name": "ModulesGarden GoGetSSL",
+  "authors": [
+    {
+      "name": "ModulesGarden",
+      "url": "https://www.modulesgarden.com"
+    }
+  ],
+  "logo": "views/default/img/logo.png",
+  "service": {
+    "name_key": "New"
+  },
+  "module": {
+    "row": "MgGoGetSSL.module_row",
+    "rows": "Plural Form of Module Row",
+    "row_key": "api_config_name"
+  }
+}

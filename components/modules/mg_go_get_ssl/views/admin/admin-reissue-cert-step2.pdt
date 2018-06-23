@@ -1,0 +1,64 @@
+<link href='<?php echo $this->view_dir ?>assets/css/style.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='<?php echo $this->view_dir ?>assets/js/scripts.js'></script>
+
+<div class='border-box-sizing'>
+    <div class='module-messages'>
+        <?php foreach ($messages as $type => $messagesByType): ?>
+            <?php foreach ($messagesByType as $message): ?>
+                <div class='alert alert-<?= $type ?>'><?= $message ?></div>
+            <?php endforeach ?>
+        <?php endforeach ?>
+    </div>
+
+    <div class='row'>
+        <div class='col-md-12'>
+            <h3 style='margin-top: 0'><?php echo $this->_('certificate_approver_email') ?></h3>
+            <p style='padding: 10px 0 0 0'><?php echo $this->_('reissue_certificate_approver_email_desc') ?></p>
+
+            <?php $this->Form->create() ?>
+
+            <br/>
+            <table class='ssl-conf-table'>
+                <thead>
+                    <th><?php echo $this->_('domain') ?></th>
+                    <th style='width: 200px'><?php echo $this->_('dcv_method') ?></th>
+                    <th>
+                        <span class='email-th'>
+                            <?php echo $this->_('email_address') ?>
+                        </span>
+                    </th>
+                </thead>
+                <tbody>
+                    <?php foreach ($domains as $domain): ?>
+                        <tr>
+                            <input type='hidden' name='<?php echo 'domains[' . $domain['domain'] . '][domain]' ?>' value='<?php echo $domain['domain'] ?>'/>
+                            <input type='hidden' name='<?php echo 'domains[' . $domain['domain'] . '][is_main]' ?>' value='<?php echo (int) ($domain['domain'] == $mainDomain) ?>'/>
+
+                            <td style='padding-right: 5px'><?php echo $domain['domain'] ?></td>
+                            <td>
+                                <?php $this->Form->fieldSelect('domains[' . $domain['domain'] . '][method]', $methods, null, [
+                                    'class' => 'form-control dcv-method-select',
+                                ]) ?>
+                            </td>
+                            <td>
+                                <?php $this->Form->fieldSelect('domains[' . $domain['domain'] . '][email]', $domain['emails'], null, [
+                                    'class' => 'form-control domain-select',
+                                ]) ?>
+                            </td>
+                        </tr>
+                    <?php endforeach ?>
+                </tbody>
+            </table>
+
+            <br/>
+            <div class='col-sm-12'>
+                <div class='button_row'>
+                    <button type='submit' name='go_to_step' value='1' class='pull-left btn btn-default submit'><?php $this->_('go_back') ?></button>
+                    <button type='submit' class='pull-right btn btn-primary submit'><?php $this->_('continue') ?></button>
+                </div>
+            </div>
+
+            <?php $this->Form->end() ?>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,252 @@
+<?php
+    $this->Widget->clear();
+    $this->Widget->setStyleSheet($this->view_dir . 'assets/css/style.css');
+    $this->Widget->create($this->_('products_configuration', true), array('id' => "manage_thesslstore"));
+?>
+
+<script type='text/javascript' src='<?php echo $this->view_dir ?>assets/js/scripts.js'></script>
+
+<div class='module-messages'>
+    <?php foreach ($messages as $type => $messagesByType): ?>
+        <?php foreach ($messagesByType as $message): ?>
+            <div class='alert alert-<?= $type ?>'><?= $message ?></div>
+        <?php endforeach ?>
+    <?php endforeach ?>
+</div>
+
+<div class='inner' style='padding-top: 0'>
+    <a href='<?php echo $moduleConfHref ?>' class='btn btn-default pull-right'>
+        <?= $this->_('back_to_module_configuration') ?>
+    </a>
+    <br/><br/>
+
+    <?php $first = true ?>
+    <?php $this->Form->create() ?>
+
+    <?php foreach ($packages as $key => $package): ?>
+        <div class='title_row <?php if ($first): ?>first<?php endif ?>'>
+            <h3><?= $package->name ?></h3>
+        </div>
+
+        <div class='pad' style='padding-top: 0'>
+            <ul>
+                <li>
+                    <?php
+                        $this->Form->label($this->_('go_getssl_product', true), 'package[' . $package->id . '][go_getssl_product]');
+                        $this->Form->fieldSelect('package[' . $package->id . '][go_getssl_product]', $products, $package->go_get_ssl_product, [
+                            'disabled' => 'disabled'
+                        ]);
+                    ?>
+                </li>
+                <li>
+                    <?php
+                        $this->Form->label($this->_('product_name', true), 'package[' . $package->id . '][product_name]');
+                        $this->Form->fieldText('package[' . $package->id . '][product_name]', $package->name);
+                    ?>
+                </li>
+                <li>
+                    <?php
+                        $this->Form->label($this->_('package_groups', true), 'package[' . $package->id . '][package_groups][]');
+                        $this->Form->fieldSelect('package[' . $package->id . '][package_groups][]', $packageGroups, $package->group_ids, [
+                            'multiple' => 'multiple'
+                        ]);
+                    ?>
+                </li>
+                <li>
+                    <?php
+                        $this->Form->label($this->_('status', true), 'package[' . $package->id . '][status]');
+                    ?>
+                    <span class='status-label status-label-<?php echo $package->status ?>'><?php echo $statuses[$package->status] ?></span>
+                    <button type='button' class='change-package-status' data-href='<?php echo $changeStatusHref ?>&package_id=<?php echo $package->id ?>'
+                            data-text-activate='<?php $this->_('activate') ?>' data-text-deactivate='<?php $this->_('deactivate') ?>'
+                    >
+                        <?php if ($package->status == 'active'): ?>
+                            <?php $this->_('deactivate') ?>
+                        <?php else: ?>
+                            <?php $this->_('activate') ?>
+                        <?php endif ?>
+                    </button>
+                </li>
+                <li>
+                    <?php
+                        $this->Form->label($this->_('enable_sans', true), 'package[' . $package->id . '][enable_sans]');
+                        $this->Form->fieldCheckbox('package[' . $package->id . '][enable_sans]', 1, $package->enable_sans);
+                    ?>
+                </li>
+                <li>
+                    <?php
+                        $this->Form->label($this->_('included_sans', true), 'package[' . $package->id . '][included_sans]');
+                        $this->Form->fieldText('package[' . $package->id . '][included_sans]', $package->included_sans);
+                    ?>
+                </li>
+                <li>
+                    <?php
+                        $this->Form->label($this->_('months', true), 'package[' . $package->id . '][months]');
+                        $this->Form->fieldText('package[' . $package->id . '][months]', $package->months);
+                    ?>
+                </li>
+                <li>
+                    <?php
+                        $this->Form->label($this->_('pay_type', true), 'package[' . $package->id . '][pay_type]');
+                        $this->Form->fieldSelect('package[' . $package->id . '][pay_type]', $pricingPeriods, $package->pay_type, [
+                            'class' => 'pay-type-select'
+                        ]);
+                    ?>
+                </li>
+                <li>
+                    <div class='product-pricing'>
+                        <?php $this->Form->label($this->_('pricing', true), 'pricing') ?>
+
+                        <?php $index = 1 ?>
+                        <?php foreach ($currencies as $currency): ?>
+                            <div class='pricing-in-currency'>
+                                <div class='currency-code'><?php echo $currency ?></div>
+                                <div class='pricing'>
+                                    <div class='row'>
+                                        <div class='col s2 text-right'>&nbsp;</div>
+                                        <div class='col s3 text-center font-bold'><?php echo $this->_('one_time_monthly', true) ?></div>
+                                        <div class='col s3 text-center font-bold'><?php echo $this->_('annually', true) ?></div>
+                                        <div class='col s3 text-center font-bold'><?php echo $this->_('biennially', true) ?></div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col s2 text-right'><?php echo $this->_('setup_fee', true) ?></div>
+                                        <div class='col s3 period-setup-fee-price' data-period='monthly'>
+                                            <?php echo $this->Form->fieldText('package[' . $package->id . '][pricing][' . $currency . '][monthly][setup_fee]', isset($package->pricing_by_currency[$currency]['month'][1]) ? $package->pricing_by_currency[$currency]['month'][1]['setup_fee'] : null) ?>
+                                        </div>
+                                        <div class='col s3 period-setup-fee-price' data-period='annually'>
+                                            <?php echo $this->Form->fieldText('package[' . $package->id . '][pricing][' . $currency . '][annually][setup_fee]', isset($package->pricing_by_currency[$currency]['year'][1]) ? $package->pricing_by_currency[$currency]['year'][1]['setup_fee'] : null) ?>
+                                        </div>
+                                        <div class='col s3 period-setup-fee-price' data-period='biennially'>
+                                            <?php echo $this->Form->fieldText('package[' . $package->id . '][pricing][' . $currency . '][biennially][setup_fee]', isset($package->pricing_by_currency[$currency]['year'][2]) ? $package->pricing_by_currency[$currency]['year'][2]['setup_fee'] : null) ?>
+                                        </div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col s2 text-right'><?php echo $this->_('price', true) ?></div>
+                                        <div class='col s3 period-price' data-period='monthly'>
+                                            <?php echo $this->Form->fieldText('package[' . $package->id . '][pricing][' . $currency . '][monthly][price]', isset($package->pricing_by_currency[$currency]['month'][1]) ? $package->pricing_by_currency[$currency]['month'][1]['price'] : null) ?>
+                                        </div>
+                                        <div class='col s3 period-price' data-period='annually'>
+                                            <?php echo $this->Form->fieldText('package[' . $package->id . '][pricing][' . $currency . '][annually][price]', isset($package->pricing_by_currency[$currency]['year'][1]) ? $package->pricing_by_currency[$currency]['year'][1]['price'] : null) ?>
+                                        </div>
+                                        <div class='col s3 period-price' data-period='biennially'>
+                                            <?php echo $this->Form->fieldText('package[' . $package->id . '][pricing][' . $currency . '][biennially][price]', isset($package->pricing_by_currency[$currency]['year'][2]) ? $package->pricing_by_currency[$currency]['year'][2]['price'] : null) ?>
+                                        </div>
+                                    </div>
+                                    <div class='row'>
+                                        <div class='col s2 text-right'><?php echo $this->_('enable', true) ?></div>
+                                        <div class='col s3 text-center'>
+                                            <?php echo $this->Form->fieldCheckbox('package[' . $package->id . '][pricing][' . $currency . '][monthly][enable]', 1, isset($package->pricing_by_currency[$currency]['month'][1]), [
+                                                'data-period' => 'monthly',
+                                                'class'       => 'enable-price-period'
+                                            ]) ?>
+                                        </div>
+                                        <div class='col s3 text-center'>
+                                            <?php echo $this->Form->fieldCheckbox('package[' . $package->id . '][pricing][' . $currency . '][annually][enable]', 1, isset($package->pricing_by_currency[$currency]['year'][1]), [
+                                                'data-period' => 'annually',
+                                                'class'       => 'enable-price-period',
+                                            ]) ?>
+                                        </div>
+                                        <div class='col s3 text-center'>
+                                            <?php echo $this->Form->fieldCheckbox('package[' . $package->id . '][pricing][' . $currency . '][biennially][enable]', 1, isset($package->pricing_by_currency[$currency]['year'][2]), [
+                                                'data-period' => 'biennially',
+                                                'class'       => 'enable-price-period',
+                                            ]) ?>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <?php if ($index++ < count($currencies)): ?>
+                                <div class='separator'></div>
+                            <?php endif ?>
+                        <?php endforeach ?>
+                    </div>
+                </li>
+            </ul>
+        </div>
+
+        <div class='button_row'>
+            <button type='submit' class='pull-left btn btn-primary submit' name='save_single_product' value='<?php echo $package->id ?>'><?php $this->_('save') ?></button>
+        </div>
+        <br/><br/><br/>
+
+        <?php $first = false ?>
+    <?php endforeach ?>
+
+    <?php $this->Form->end() ?>
+
+    <?php if ($pages > 1): ?>
+        <div class='pagination' style='height: auto; overflow: hidden'>
+            <div class='navs prev-first' style='display: inline-block'>
+                <?php if (isset($first)): ?>
+                    <a href='<?= $currentUrl ?>&p=<?= $first ?>'
+                       class='page button button--sm button--warning'
+                    >
+                        <<
+                    </a>
+                <?php endif ?>
+
+                <?php if (isset($prev)): ?>
+                    <a href='<?= $currentUrl ?>&p=<?= $prev ?>'
+                       class='page button button--sm button--default'
+                    >
+                        <
+                    </a>
+                <?php endif ?>
+            </div>
+
+            <div class='numbers' style='display: inline-block'>
+                <?php for($x = 1; $x <= $pages; $x++): ?>
+
+                    <?php if (isset($inRange) && reset($inRange) > 1 && $x == 1): ?>
+                        <a href='<?= $currentUrl ?>&p=1'
+                           class='page button button--sm button--info'
+                        >
+                            1
+                        </a>
+                        <a disabled class='page page button button--sm button--default'>...</a>
+                    <?php endif ?>
+
+                    <?php if (isset($inRange) && !in_array($x, $inRange)): ?>
+                        <?php if (isset($inRange) && end($inRange) < $pages && $x == $pages): ?>
+                            <a disabled class='page button button--sm button--default'>...</a>
+                            <a href='<?= $currentUrl ?>&p=<?= $pages ?>'
+                               class='page button button--sm button--info'
+                            >
+                                <?= $pages ?>
+                            </a>
+                        <?php endif ?>
+
+                        <?php continue ?>
+                    <?php endif ?>
+
+                    <a href='<?= $currentUrl ?>&p=<?= $x ?>'
+                       class='page button button--sm button--<?= $x == $page ? 'success' : 'info' ?>'
+                    >
+                        <?= $x ?>
+                    </a>
+                <?php endfor ?>
+            </div>
+
+            <div class='navs next-last' style='display: inline-block'>
+                <?php if (isset($next)): ?>
+                    <a href='<?= $currentUrl ?>&p=<?= $next ?>'
+                       class='page button button--sm button--default'
+                    >
+                        >
+                    </a>
+                <?php endif ?>
+
+                <?php if (isset($last)): ?>
+                    <a href='<?= $currentUrl ?>&p=<?= $last ?>'
+                       class='page button button--sm button--warning'
+                    >
+                        >>
+                    </a>
+                <?php endif ?>
+            </div>
+        </div>
+    <?php endif ?>
+</div>
+
+<?php $this->Widget->end() ?>

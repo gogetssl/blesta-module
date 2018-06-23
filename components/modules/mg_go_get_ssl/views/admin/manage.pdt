@@ -1,0 +1,16 @@
+<?php
+    $this->Widget->clear();
+    $this->Widget->setLinkButtons($linkButtons);
+    $this->Widget->setStyleSheet($this->view_dir . 'assets/css/style.css');
+    $this->Widget->create($this->_("AdminCompanyModules.manage.boxtitle_manage", true, $this->Html->_($module->name, true)), array('id'=>"manage_thesslstore"));
+?>
+
+<div class='module-messages'>
+    <?php foreach ($messages as $type => $messagesByType): ?>
+        <?php foreach ($messagesByType as $message): ?>
+            <div class='alert alert-<?= $type ?>'><?= $message ?></div>
+        <?php endforeach ?>
+    <?php endforeach ?>
+</div>
+
+<?php $this->Widget->end() ?>

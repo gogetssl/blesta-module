@@ -1,0 +1,12 @@
+<link href='<?php echo $this->view_dir ?>assets/css/style.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='<?php echo $this->view_dir ?>assets/js/scripts.js'></script>
+
+<div class='border-box-sizing'>
+    <div class='module-messages'>
+        <?php foreach ($messages as $type => $messagesByType): ?>
+            <?php foreach ($messagesByType as $message): ?>
+                <div class='alert alert-<?= $type ?>'><?= $message ?></div>
+            <?php endforeach ?>
+        <?php endforeach ?>
+    </div>
+</div>

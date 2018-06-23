@@ -1,0 +1,146 @@
+<?php
+    $this->Widget->clear();
+    $this->Widget->setStyleSheet($this->view_dir . 'assets/css/style.css');
+    $this->Widget->create($this->_("configuration", true), array('id' => "manage_thesslstore"));
+?>
+
+<script type='text/javascript' src='<?php echo $this->view_dir ?>assets/js/scripts.js'></script>
+
+<div class='module-messages'>
+    <?php foreach ($messages as $type => $messagesByType): ?>
+        <?php foreach ($messagesByType as $message): ?>
+            <div class='alert alert-<?= $type ?>'><?= $message ?></div>
+        <?php endforeach ?>
+    <?php endforeach ?>
+</div>
+
+<div class='inner' style='padding-top: 0'>
+    <a href='<?php echo $moduleConfHref ?>' class='btn btn-default pull-right'>
+        <?= $this->_('back_to_module_configuration') ?>
+    </a>
+    <br/><br/>
+
+    <div class='title_row first'>
+        <h3><?= $this->_('api_credential') ?></h3>
+    </div>
+
+    <?php
+        $this->Form->create();
+        $this->Form->fieldHidden('module_row_id', $this->Html->ifSet($vars->id));
+    ?>
+
+    <div class='pad'>
+        <ul>
+            <li>
+                <?php
+                    $this->Form->label($this->_('api_username', true), 'api_username');
+                    $this->Form->fieldText('api_username', $this->Html->ifSet($vars->meta->api_username), ['id' => 'api_username']);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('api_password', true), 'api_password');
+                    $this->Form->fieldPassword('api_password', ['value' => $this->Html->ifSet($vars->meta->api_password)], ['id' => 'api_password']);
+                ?>
+            </li>
+            <li>
+                <button class='test-connection-button' data-href='<?php echo $testConnectionHref ?>' type='button'><?php echo $this->_('test_connection') ?></button>
+            </li>
+        </ul>
+    </div>
+
+    <div class='title_row'>
+        <h3><?= $this->_('technical_contact') ?></h3>
+    </div>
+
+    <div class='pad'>
+        <ul>
+            <li>
+                <?php
+                    $this->Form->label($this->_('use_admin_contact', true), 'use_admin_contact');
+                    $this->Form->fieldCheckbox('use_admin_contact', 1, isset($vars->meta->use_admin_contact) && $vars->meta->use_admin_contact);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('tech_firstname', true), 'tech_firstname');
+                    $this->Form->fieldText('tech_firstname', $this->Html->ifSet($vars->meta->tech_firstname));
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('tech_lastname', true), 'tech_lastname');
+                    $this->Form->fieldText('tech_lastname', ['value' => $this->Html->ifSet($vars->meta->tech_lastname)]);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('tech_organization', true), 'tech_organization');
+                    $this->Form->fieldText('tech_organization', ['value' => $this->Html->ifSet($vars->meta->tech_organization)]);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('tech_addressline1', true), 'tech_addressline1');
+                    $this->Form->fieldText('tech_addressline1', ['value' => $this->Html->ifSet($vars->meta->tech_addressline1)]);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('tech_phone', true), 'tech_phone');
+                    $this->Form->fieldText('tech_phone', ['value' => $this->Html->ifSet($vars->meta->tech_phone)]);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('tech_title', true), 'tech_title');
+                    $this->Form->fieldText('tech_title', ['value' => $this->Html->ifSet($vars->meta->tech_title)]);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('tech_email', true), 'tech_email');
+                    $this->Form->fieldText('tech_email', ['value' => $this->Html->ifSet($vars->meta->tech_email)]);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('tech_city', true), 'tech_city');
+                    $this->Form->fieldText('tech_city', ['value' => $this->Html->ifSet($vars->meta->tech_city)]);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('tech_country', true), 'tech_country');
+                    $this->Form->fieldSelect('tech_country', $countries, $this->Html->ifSet($vars->meta->tech_country));
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('tech_fax', true), 'tech_fax');
+                    $this->Form->fieldText('tech_fax', ['value' => $this->Html->ifSet($vars->meta->tech_fax)]);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('tech_postalcode', true), 'tech_postalcode');
+                    $this->Form->fieldText('tech_postalcode', ['value' => $this->Html->ifSet($vars->meta->tech_postalcode)]);
+                ?>
+            </li>
+            <li>
+                <?php
+                    $this->Form->label($this->_('tech_region', true), 'tech_region');
+                    $this->Form->fieldText('tech_region', ['value' => $this->Html->ifSet($vars->meta->tech_region)]);
+                ?>
+            </li>
+        </ul>
+    </div>
+
+    <div class='button_row'>
+        <a class='pull-right btn btn-primary submit' href='#'><?php $this->_('save') ?></a>
+    </div>
+
+    <?php $this->Form->end() ?>
+</div>
+
+<?php $this->Widget->end() ?>

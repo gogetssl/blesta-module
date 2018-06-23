@@ -1,0 +1,318 @@
+<script type='text/javascript' src='<?php echo $this->view_dir ?>assets/js/scripts.js'></script>
+<link href='<?php echo $this->view_dir ?>assets/css/style.css' rel='stylesheet' type='text/css'/>
+
+<?php if ($isBlesta36): ?>
+    <link href='<?php echo $this->view_dir ?>assets/css/style36.css' rel='stylesheet' type='text/css'/>
+<?php endif ?>
+
+<div class='border-box-sizing'>
+    <div class='module-messages'>
+        <?php foreach ($messages as $type => $messagesByType): ?>
+            <?php foreach ($messagesByType as $message): ?>
+                <div class='alert alert-<?= $type ?>'><?= $message ?></div>
+            <?php endforeach ?>
+        <?php endforeach ?>
+    </div>
+
+    <div class='page-modal-cover'>
+        <div class='action-modal'>
+            <div class='close-button'>x</div>
+            <div class='content'></div>
+            <div class='response'></div>
+        </div>
+    </div>
+
+    <?php if (isset($orderData)): ?>
+        <div class='row row-margin'>
+            <div class='col-sm-4 text-right'>
+                <?php echo $this->_('activation_status') ?>
+            </div>
+            <div class='col-sm-8'>
+                <strong><?php echo $this->_('activation_status_' . $orderData['status']) ?></strong>
+            </div>
+        </div>
+    <?php endif ?>
+    <?php if ($orderData['status'] == 'active'): ?>
+        <div class='row row-margin'>
+            <div class='col-sm-4 text-right'>
+                <?php echo $this->_('valid_from') ?>
+            </div>
+            <div class='col-sm-8'>
+                <strong><?php echo $orderData['valid_from'] ?></strong>
+            </div>
+        </div>
+        <div class='row row-margin'>
+                <div class='col-sm-4 text-right'>
+                    <?php echo $this->_('valid_till') ?>
+                </div>
+                <div class='col-sm-8'>
+                    <strong><?php echo $orderData['valid_till'] ?></strong>
+                </div>
+            </div>
+    <?php endif ?>
+    <?php if (isset($orderData['domain']) && !empty($orderData['domain'])): ?>
+        <div class='row row-margin'>
+            <div class='col-sm-4 text-right'>
+                <?php echo $this->_('domain') ?>
+            </div>
+            <div class='col-sm-8'>
+                <strong><?php echo $orderData['domain'] ?></strong>
+            </div>
+        </div>
+    <?php endif ?>
+    <?php if (isset($orderData['approver_method']) && !empty($orderData['approver_method']) && is_array($orderData['approver_method'])): ?>
+        <?php $approverMethod = key($orderData['approver_method']) ?>
+        <?php $approverMethodData = $orderData['approver_method'][$approverMethod] ?>
+
+        <div class='row row-margin'>
+            <div class='col-sm-4 text-right'>
+                <?php echo $this->_('approver_method') ?>
+            </div>
+            <div class='col-sm-8'>
+                <strong><?php echo strtoupper($approverMethod) ?></strong>
+
+                <a class='more-info instant-modal' data-selector='.approver-method-content-<?php echo $serviceId ?>' data-title='<?php echo $this->_('approver_method') ?>'>
+                    <i class='fa fa-info-circle'></i>
+                    <?php echo $this->_('more_info') ?>
+                </a>
+
+                <div class='approver-method-content-<?php echo $serviceId ?> hide'>
+                    <?php if ($approverMethod == 'http' || $approverMethod == 'https'): ?>
+                        <div class='row row-margin'>
+                            <div class='col-sm-4 text-right'>
+                                <?php echo $this->_('link') ?>
+                            </div>
+                            <div class='col-sm-8'>
+                                <strong><?php echo $approverMethodData['link'] ?></strong>
+                            </div>
+                        </div>
+                        <div class='row row-margin'>
+                            <div class='col-sm-4 text-right'>
+                                <?php echo $this->_('filename') ?>
+                            </div>
+                            <div class='col-sm-8'>
+                                <strong><?php echo $approverMethodData['filename'] ?></strong>
+                            </div>
+                        </div>
+                        <div class='row row-margin'>
+                            <div class='col-sm-4 text-right'>
+                                <?php echo $this->_('content') ?>
+                            </div>
+                            <div class='col-sm-8'>
+                                <strong><?php echo $approverMethodData['content'] ?></strong>
+                            </div>
+                        </div>
+                    <?php elseif($approverMethod == 'dns'): ?>
+                        <div class='row row-margin'>
+                            <div class='col-sm-4 text-right'>
+                                <?php echo $this->_('record') ?>
+                            </div>
+                            <div class='col-sm-8'>
+                                <strong style='word-wrap: break-word'><?php echo $approverMethodData['record'] ?></strong>
+                            </div>
+                        </div>
+                    <?php endif ?>
+                </div>
+
+                <strong><?php $orderData['domain'] ?></strong>
+            </div>
+        </div>
+    <?php endif ?>
+    <?php if (isset($orderData['approver_method']) && !empty($orderData['approver_method']) && is_string($orderData['approver_method'])): ?>
+        <div class='row row-margin'>
+            <div class='col-sm-4 text-right'>
+                <?php echo $this->_('validation_email') ?>
+            </div>
+            <div class='col-sm-8'>
+                <strong><?php echo $orderData['approver_method'] ?></strong>
+            </div>
+        </div>
+    <?php endif ?>
+    <?php if (isset($orderData['partner_order_id']) && !empty($orderData['partner_order_id'])): ?>
+        <div class='row row-margin'>
+            <div class='col-sm-4 text-right'>
+                <?php echo $this->_('partner_order_id') ?>
+            </div>
+            <div class='col-sm-8'>
+                <strong><?php echo $orderData['partner_order_id'] ?></strong>
+            </div>
+        </div>
+    <?php endif ?>
+    <?php if (isset($orderData['crt_code']) && !empty($orderData['crt_code'])): ?>
+        <div class='row row-margin'>
+            <div class='col-sm-4 text-right'>
+                <?php echo $this->_('crt_code') ?>
+            </div>
+            <div class='col-sm-7'>
+                <textarea style='width: 100%' rows='8'><?php echo $orderData['crt_code'] ?></textarea>
+            </div>
+        </div>
+    <?php endif ?>
+    <?php if (isset($orderData['ca_code']) && !empty($orderData['ca_code'])): ?>
+        <div class='row row-margin'>
+            <div class='col-sm-4 text-right'>
+                <?php echo $this->_('ca_code') ?>
+            </div>
+            <div class='col-sm-7'>
+                <textarea style='width: 100%' rows='8'><?php echo $orderData['ca_code'] ?></textarea>
+            </div>
+        </div>
+    <?php endif ?>
+    <?php if (isset($orderData['san']) && !empty($orderData['san'])): ?>
+        <div class='row row-margin'>
+            <div class='col-sm-4 text-right'>
+                <?php echo $this->_('sans') ?>
+            </div>
+            <div class='col-sm-8'>
+                <?php foreach ($orderData['san'] as $key => $san): ?>
+                    <?php $sanMethod = key($san['validation']) ?>
+                    <?php $sanData = $san['validation'][$sanMethod] ?>
+
+                    <strong><?php echo $san['san_name'] ?> (<?php echo strtoupper($sanMethod) ?>)</strong>
+
+                    <a class='more-info instant-modal' data-selector='.san-<?php echo $key ?>-method-content-<?php echo $serviceId ?>' data-title='<?php echo $this->_('approver_method') ?>'>
+                        <i class='fa fa-info-circle'></i>
+                        <?php echo $this->_('more_info') ?>
+                    </a>
+                    <br/>
+
+                    <div class='san-<?php echo $key ?>-method-content-<?php echo $serviceId ?> hide'>
+                        <?php if (isset($san['status_description']) && !empty($san['status_description'])): ?>
+                            <div class='row row-margin'>
+                                <div class='col-sm-4 text-right'>
+                                    <?php echo $this->_('status') ?>
+                                </div>
+                                <div class='col-sm-8'>
+                                    <strong><?php echo $san['status_description'] ?></strong>
+                                </div>
+                            </div>
+                        <?php endif ?>
+                        <?php if ($sanMethod == 'http' || $sanMethod == 'https'): ?>
+                            <div class='row row-margin'>
+                                <div class='col-sm-4 text-right'>
+                                    <?php echo $this->_('link') ?>
+                                </div>
+                                <div class='col-sm-8'>
+                                    <strong><?php echo $sanData['link'] ?></strong>
+                                </div>
+                            </div>
+                            <div class='row row-margin'>
+                                <div class='col-sm-4 text-right'>
+                                    <?php echo $this->_('filename') ?>
+                                </div>
+                                <div class='col-sm-8'>
+                                    <strong><?php echo $sanData['filename'] ?></strong>
+                                </div>
+                            </div>
+                            <div class='row row-margin'>
+                                <div class='col-sm-4 text-right'>
+                                    <?php echo $this->_('content') ?>
+                                </div>
+                                <div class='col-sm-8'>
+                                    <strong><?php echo $sanData['content'] ?></strong>
+                                </div>
+                            </div>
+                        <?php elseif($sanMethod == 'dns'): ?>
+                            <div class='row row-margin'>
+                                <div class='col-sm-4 text-right'>
+                                    <?php echo $this->_('record') ?>
+                                </div>
+                                <div class='col-sm-8'>
+                                    <strong style='word-wrap: break-word'><?php echo $sanData['record'] ?></strong>
+                                </div>
+                            </div>
+                        <?php endif ?>
+                    </div>
+                <?php endforeach ?>
+            </div>
+        </div>
+    <?php endif ?>
+
+    <br/<br/>
+    <?php if (isset($orderData['approver_method']) && !empty($orderData['approver_method']) && is_string($orderData['approver_method'])): ?>
+        <button type='button' data-url='<?php echo $adminUrl ?>&service_id=<?php echo $serviceId ?>&act=resend_validation_email' class='button button--sm button--info preloader perform-ajax-action'>
+            <span class='preloader'></span>
+            <span class='text'><?php echo $this->_('resend_validation_email') ?></span>
+        </button>
+
+        <?php if (count($domains) == 1): ?>
+            <button type='button' class='button button--sm button--info instant-modal' data-selector='.change-validatiom-email-<?php echo $serviceId ?>' data-title='<?php echo $this->_('change_validation_email') ?>'>
+                <span class='preloader'></span>
+                <span class='text'><?php echo $this->_('change_validation_email') ?></span>
+            </button>
+
+            <div class='change-validatiom-email-<?php echo $serviceId ?> hide'>
+                <form>
+                    <?php $domain = reset($domains) ?>
+
+                    <?php $this->Form->label($this->_('new_validation_email', true), 'new_validation_email', [
+                        'class' => 'control-label'
+                    ]) ?>
+                    <?php $this->Form->fieldSelect('email', $domain['emails'], null, [
+                        'class' => 'form-control',
+                    ]) ?>
+
+                    <br/><br/>
+                    <button type='button' data-url='<?php echo $adminUrl ?>&service_id=<?php echo $serviceId ?>&act=change_validation_email' class='button button--sm button--info preloader perform-ajax-action'>
+                        <span class='preloader'></span>
+                        <span class='text'><?php echo $this->_('change_validation_email') ?></span>
+                    </button>
+                </form>
+            </div>
+        <?php endif ?>
+    <?php endif ?>
+
+    <?php if (isset($orderData) && $orderData['status'] != 'active'): ?>
+        <button type='button' class='button button--sm button--info instant-modal' data-selector='.revalidate-<?php echo $serviceId ?>' data-title='<?php echo $this->_('revalidate') ?>'>
+            <span class='preloader'></span>
+            <span class='text'><?php echo $this->_('revalidate') ?></span>
+        </button>
+
+        <div class='revalidate-<?php echo $serviceId ?> hide'>
+            <form>
+                <table class='ssl-conf-table'>
+                    <thead>
+                        <th style='width: 300px; text-align: left'><?php echo $this->_('domain') ?></th>
+                        <th style='width: 200px; text-align: left'><?php echo $this->_('dcv_method') ?></th>
+                        <th style='text-align: left'>
+                            <span class='email-th'>
+                                <?php echo $this->_('email_address') ?>
+                            </span>
+                        </th>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($domains as $domain): ?>
+                            <tr>
+                                <input type='hidden' name='<?php echo 'domains[' . $domain['domain'] . '][domain]' ?>' value='<?php echo $domain['domain'] ?>'/>
+                                <input type='hidden' name='<?php echo 'domains[' . $domain['domain'] . '][is_main]' ?>' value='<?php echo (int) ($domain['domain'] == $mainDomain) ?>'/>
+
+                                <td><?php echo $domain['domain'] ?></td>
+                                <td>
+                                    <?php $this->Form->fieldSelect('domains[' . $domain['domain'] . '][method]', $methods, null, [
+                                        'class' => 'form-control dcv-method-select',
+                                    ]) ?>
+                                </td>
+                                <td>
+                                    <?php $this->Form->fieldSelect('domains[' . $domain['domain'] . '][email]', $domain['emails'], null, [
+                                        'class' => 'form-control domain-select',
+                                    ]) ?>
+                                </td>
+                            </tr>
+                        <?php endforeach ?>
+                    </tbody>
+                </table>
+
+                <br/>
+                <button type='button' data-url='<?php echo $adminUrl ?>&service_id=<?php echo $serviceId ?>&act=revalidate' class='button button--sm button--info preloader perform-ajax-action'>
+                    <span class='preloader'></span>
+                    <span class='text'><?php echo $this->_('revalidate') ?></span>
+                </button>
+            </form>
+        </div>
+    <?php elseif (isset($reissueCertUrl)): ?>
+        <a href='<?php echo $reissueCertUrl ?>' class='button button--sm button--info' style='display: inline'>
+            <span class='preloader'></span>
+            <span class='text'><?php echo $this->_('reissue_certificate') ?></span>
+        </a>
+    <?php endif ?>
+</div>

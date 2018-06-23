@@ -1,0 +1,348 @@
+<link href='<?php echo $this->view_dir ?>assets/css/style.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='<?php echo $this->view_dir ?>assets/js/scripts.js'></script>
+
+<div class='module-messages'>
+    <?php foreach ($messages as $type => $messagesByType): ?>
+        <?php foreach ($messagesByType as $message): ?>
+            <div class='alert alert-<?= $type ?>'><?= $message ?></div>
+        <?php endforeach ?>
+    <?php endforeach ?>
+</div>
+
+<div class='row'>
+    <div class='col-md-12'>
+        <h3 style='margin-top: 0'><?php echo $this->_('server_information') ?></h3>
+        <p><?php echo $this->_('server_information_desc') ?></p>
+
+        <?php $this->Form->create() ?>
+
+        <div class='form-group'>
+            <?php
+                $this->Form->label($this->_('order_type', true), 'order_type');
+                $this->Form->fieldSelect('order_type', $orderTypes, $data['order_type'], [
+                    'class' => 'form-control'
+                ]);
+            ?>
+        </div>
+
+        <p><?php echo $this->_('order_type_desc') ?></p>
+
+        <div class='form-group'>
+            <?php
+                $this->Form->label($this->_('web_server_type', true), 'web_server_type');
+                $this->Form->fieldSelect('web_server_type', $webServerTypes, $data['web_server_type'], [
+                    'class' => 'form-control'
+                ]);
+            ?>
+        </div>
+        <div class='form-group'>
+            <?php
+                $this->Form->label($this->_('csr', true), 'csr');
+                $this->Form->fieldTextarea('csr', $data['csr'], [
+                    'class' => 'form-control',
+                    'rows'  => 5
+                ]);
+            ?>
+        </div>
+
+        <?php if ($sansEnabled && $includedSans): ?>
+            <div class='form-group' style='margin-bottom: 3px'>
+                <?php
+                    $this->Form->label($this->_('sans_domains', true) . ' (' . $includedSans . ')', 'sans_domains');
+                    $this->Form->fieldTextarea('sans_domains', $data['sans_domains'], [
+                        'class' => 'form-control',
+                        'rows'  => 5
+                    ]);
+                ?>
+            </div>
+            <p><?php $this->_('sans_domains_desc') ?></p>
+        <?php endif ?>
+
+        <br/>
+        <h3><?php echo $this->_('administrative_contact_information') ?></h3>
+        <p><?php echo $this->_('administrative_contact_information_desc') ?></p>
+
+        <br/>
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <?php $this->Form->label($this->_('admin_first_name', true), 'admin_first_name', [
+                    'class' => 'control-label text-right'
+                ]) ?>
+            </div>
+            <div class='col-sm-9'>
+                <?php $this->Form->fieldText('admin_first_name', $data['admin_first_name'], [
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <?php $this->Form->label($this->_('admin_last_name', true), 'admin_last_name', [
+                    'class' => 'control-label text-right'
+                ]) ?>
+            </div>
+            <div class='col-sm-9'>
+                <?php $this->Form->fieldText('admin_last_name', $data['admin_last_name'], [
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <?php $this->Form->label($this->_('admin_organization_name', true), 'admin_organization_name', [
+                    'class' => 'control-label text-right'
+                ]) ?>
+            </div>
+            <div class='col-sm-9'>
+                <?php $this->Form->fieldText('admin_organization_name', $data['admin_organization_name'], [
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <?php $this->Form->label($this->_('admin_job_title', true), 'admin_job_title', [
+                    'class' => 'control-label text-right'
+                ]) ?>
+            </div>
+            <div class='col-sm-9'>
+                <?php $this->Form->fieldText('admin_job_title', $data['admin_job_title'], [
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <?php $this->Form->label($this->_('admin_email', true), 'admin_email', [
+                    'class' => 'control-label text-right'
+                ]) ?>
+            </div>
+            <div class='col-sm-9'>
+                <?php $this->Form->fieldText('admin_email', $data['admin_email'], [
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <?php $this->Form->label($this->_('admin_address1', true), 'admin_address1', [
+                    'class' => 'control-label text-right'
+                ]) ?>
+            </div>
+            <div class='col-sm-9'>
+                <?php $this->Form->fieldText('admin_address1', $data['admin_address1'], [
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <?php $this->Form->label($this->_('admin_address2', true), 'admin_address2', [
+                    'class' => 'control-label text-right'
+                ]) ?>
+            </div>
+            <div class='col-sm-9'>
+                <?php $this->Form->fieldText('admin_address2', $data['admin_address2'], [
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <?php $this->Form->label($this->_('admin_city', true), 'admin_city', [
+                    'class' => 'control-label text-right'
+                ]) ?>
+            </div>
+            <div class='col-sm-9'>
+                <?php $this->Form->fieldText('admin_city', $data['admin_city'], [
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <?php $this->Form->label($this->_('admin_state', true), 'admin_state', [
+                    'class' => 'control-label text-right'
+                ]) ?>
+            </div>
+            <div class='col-sm-9'>
+                <?php $this->Form->fieldText('admin_state', $data['admin_state'], [
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <?php $this->Form->label($this->_('admin_zipcode', true), 'admin_zipcode', [
+                    'class' => 'control-label text-right'
+                ]) ?>
+            </div>
+            <div class='col-sm-9'>
+                <?php $this->Form->fieldText('admin_zipcode', $data['admin_zipcode'], [
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <?php $this->Form->label($this->_('admin_country', true), 'admin_country', [
+                    'class' => 'control-label text-right'
+                ]) ?>
+            </div>
+            <div class='col-sm-9'>
+                <?php $this->Form->fieldSelect('admin_country', $countries, $data['admin_country'], [
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+        </div>
+        <div class='form-group'>
+            <div class='col-sm-3'>
+                <?php $this->Form->label($this->_('admin_phone_number', true), 'admin_phone_number', [
+                    'class' => 'control-label text-right'
+                ]) ?>
+            </div>
+            <div class='col-sm-9'>
+                <?php $this->Form->fieldText('admin_phone_number', $data['admin_phone_number'], [
+                    'class' => 'form-control',
+                ]) ?>
+            </div>
+        </div>
+
+        <?php if ($orgRequired): ?>
+            <br/>
+            <h3><?php echo $this->_('organization_contact_information') ?></h3>
+            <p><?php echo $this->_('organization_contact_information_desc') ?></p>
+
+            <br/>
+            <div class='form-group'>
+                <div class='col-sm-3'>
+                    <?php $this->Form->label($this->_('org_name', true), 'org_name', [
+                        'class' => 'control-label text-right'
+                    ]) ?>
+                </div>
+                <div class='col-sm-9'>
+                    <?php $this->Form->fieldText('org_name', $data['org_name'], [
+                        'class' => 'form-control',
+                    ]) ?>
+                </div>
+            </div>
+            <div class='form-group'>
+                <div class='col-sm-3'>
+                    <?php $this->Form->label($this->_('org_division', true), 'org_division', [
+                        'class' => 'control-label text-right'
+                    ]) ?>
+                </div>
+                <div class='col-sm-9'>
+                    <?php $this->Form->fieldText('org_division', $data['org_division'], [
+                        'class' => 'form-control',
+                    ]) ?>
+                </div>
+            </div>
+            <div class='form-group'>
+                <div class='col-sm-3'>
+                    <?php $this->Form->label($this->_('org_duns', true), 'org_duns', [
+                        'class' => 'control-label text-right'
+                    ]) ?>
+                </div>
+                <div class='col-sm-9'>
+                    <?php $this->Form->fieldText('org_duns', $data['org_duns'], [
+                        'class' => 'form-control',
+                    ]) ?>
+                </div>
+            </div>
+            <div class='form-group'>
+                <div class='col-sm-3'>
+                    <?php $this->Form->label($this->_('org_addressline1', true), 'org_addressline1', [
+                        'class' => 'control-label text-right'
+                    ]) ?>
+                </div>
+                <div class='col-sm-9'>
+                    <?php $this->Form->fieldText('org_addressline1', $data['org_addressline1'], [
+                        'class' => 'form-control',
+                    ]) ?>
+                </div>
+            </div>
+            <div class='form-group'>
+                <div class='col-sm-3'>
+                    <?php $this->Form->label($this->_('org_city', true), 'org_city', [
+                        'class' => 'control-label text-right'
+                    ]) ?>
+                </div>
+                <div class='col-sm-9'>
+                    <?php $this->Form->fieldText('org_city', $data['org_city'], [
+                        'class' => 'form-control',
+                    ]) ?>
+                </div>
+            </div>
+            <div class='form-group'>
+                <div class='col-sm-3'>
+                    <?php $this->Form->label($this->_('org_postalcode', true), 'org_postalcode', [
+                        'class' => 'control-label text-right'
+                    ]) ?>
+                </div>
+                <div class='col-sm-9'>
+                    <?php $this->Form->fieldText('org_postalcode', $data['org_postalcode'], [
+                        'class' => 'form-control',
+                    ]) ?>
+                </div>
+            </div>
+            <div class='form-group'>
+                <div class='col-sm-3'>
+                    <?php $this->Form->label($this->_('org_region', true), 'org_region', [
+                        'class' => 'control-label text-right'
+                    ]) ?>
+                </div>
+                <div class='col-sm-9'>
+                    <?php $this->Form->fieldText('org_region', $data['org_region'], [
+                        'class' => 'form-control',
+                    ]) ?>
+                </div>
+            </div>
+            <div class='form-group'>
+                <div class='col-sm-3'>
+                    <?php $this->Form->label($this->_('org_country', true), 'org_country', [
+                        'class' => 'control-label text-right'
+                    ]) ?>
+                </div>
+                <div class='col-sm-9'>
+                    <?php $this->Form->fieldSelect('org_country', $countries, $data['org_country'], [
+                        'class' => 'form-control',
+                    ]) ?>
+                </div>
+            </div>
+            <div class='form-group'>
+                <div class='col-sm-3'>
+                    <?php $this->Form->label($this->_('org_fax', true), 'org_fax', [
+                        'class' => 'control-label text-right'
+                    ]) ?>
+                </div>
+                <div class='col-sm-9'>
+                    <?php $this->Form->fieldText('org_fax', $data['org_fax'], [
+                        'class' => 'form-control',
+                    ]) ?>
+                </div>
+            </div>
+            <div class='form-group'>
+                <div class='col-sm-3'>
+                    <?php $this->Form->label($this->_('org_phone', true), 'org_phone', [
+                        'class' => 'control-label text-right'
+                    ]) ?>
+                </div>
+                <div class='col-sm-9'>
+                    <?php $this->Form->fieldText('org_phone', $data['org_phone'], [
+                        'class' => 'form-control',
+                    ]) ?>
+                </div>
+            </div>
+        <?php endif ?>
+
+        <br/>
+        <div class='col-sm-12'>
+            <div class='button_row'>
+                <button type='submit' class='pull-right btn btn-primary submit'><?php $this->_('continue') ?></button>
+            </div>
+        </div>
+
+        <?php $this->Form->end() ?>
+    </div>
+</div>
