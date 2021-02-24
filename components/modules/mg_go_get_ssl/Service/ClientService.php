@@ -13,6 +13,7 @@ class ClientService
     const CLIENTS_TABLE = 'clients';
     const CONTACTS_TABLE = 'contacts';
     const CONTACT_NUMBERS = 'contact_numbers';
+    const SERVICES = 'services';
 
     /**
      * CurrencyService constructor
@@ -66,6 +67,17 @@ class ClientService
         }
 
         return $client;
+    }
+
+    public function getClientByServiceId($serviceId)
+    {
+        $service = $this->Record
+            ->select()
+            ->from(self::SERVICES)
+            ->where('id', '=', $serviceId)
+            ->fetch();
+
+        return $this->getClient($service->client_id);
     }
 
     /**

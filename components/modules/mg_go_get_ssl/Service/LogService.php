@@ -25,6 +25,7 @@ class LogService
     const NAMESPACE_CERT_DETAILS = 'cert_details';
     const NAMESPACE_CERT_CONTACTS = 'cert_contacts';
     const NAMESPACE_CERT_RENEW = 'cert_renew';
+    const NAMESPACE_CRON = 'cron';
 
     /**
      * LogService constructor
@@ -107,11 +108,12 @@ class LogService
         }
 
         $this->Record->insert(self::LOGS_TABLE, [
-            'title'     => $title,
-            'namespace' => $namespace,
-            'type'      => $type,
-            'function'  => $function,
-            'data'      => $data,
+            'title'      => $title,
+            'namespace'  => $namespace,
+            'type'       => $type,
+            'function'   => $function,
+            'data'       => $data,
+            'created_at' => date('Y-m-d H:i:s', time()),
         ]);
     }
 

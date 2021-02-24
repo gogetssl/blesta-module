@@ -7,7 +7,7 @@ return [
     'module' => [
         'namespace'       => 'MgGoGetSsl',
         'system_name'     => 'mg_go_get_ssl',
-        'version'         => '1.0.0',
+        'version'         => '2.0.0',
         'authors'         => [
             [
                 'name' => 'ModulesGarden',
@@ -15,7 +15,7 @@ return [
             ],
         ],
         'row_name'        => 'MG GoGetSSL Configuration',
-        'row_name_plural' => 'Nie wiem co to jest w liczbie mnogiej',
+        'row_name_plural' => '',
         'group_name'      => 'Module group name',
         'row_meta_key'    => 'api_config_name',
     ],

@@ -1,13 +1,20 @@
 <?php
 
+use MgGoGetSsl\Event\ServiceAdd;
+use MgGoGetSsl\Facade\Config;
+use MgGoGetSsl\Facade\Lang;
+use MgGoGetSsl\Processor\AdminProcessor;
+use MgGoGetSsl\Processor\ClientProcessor;
+use MgGoGetSsl\Service\BlestaService;
+use MgGoGetSsl\Service\CronService;
+
 class MgGoGetSsl extends Module
 {
 
     /** @var array */
     private $events = [
-        'Services.add'  => \MgGoGetSsl\Event\ServiceAdd::class,
+        'Services.add'  => ServiceAdd::class,
         'Services.edit' => \MgGoGetSsl\Event\ServiceEdit::class,
-//        'Appcontroller.preAction' => \MgGoGetSsl\Event\AppControllerPreAction::class,
     ];
 
     /**
@@ -25,7 +32,7 @@ class MgGoGetSsl extends Module
             define('GoGetSSL_Module_DIR', __DIR__);
         }
 
-        if ((new \MgGoGetSsl\Service\BlestaService())->isBlesta36()) {
+        if ((new BlestaService())->isBlesta36()) {
             $compontents = ['Input', 'Events'];
         } else {
             $compontents = ['Input', 'Emails', 'EmailGroups', 'Events'];
@@ -47,7 +54,7 @@ class MgGoGetSsl extends Module
      */
     public function getName()
     {
-        return \MgGoGetSsl\Facade\Lang::translate('module_name');
+        return Lang::translate('module_name');
     }
 
     /**
@@ -55,15 +62,7 @@ class MgGoGetSsl extends Module
      */
     public function getVersion()
     {
-        return \MgGoGetSsl\Facade\Config::configKey('module.version', '1.0.0');
-    }
-
-    /**
-     * @return array
-     */
-    public function getAuthors()
-    {
-        return \MgGoGetSsl\Facade\Config::configKey('module.authors', []);
+        return Config::configKey('module.version', '2.0.0');
     }
 
     /**
@@ -80,7 +79,7 @@ class MgGoGetSsl extends Module
      */
     public function moduleRowName()
     {
-        return \MgGoGetSsl\Facade\Config::configKey('module.row_name', '');
+        return Config::configKey('module.row_name', '');
     }
 
     /**
@@ -88,7 +87,7 @@ class MgGoGetSsl extends Module
      */
     public function moduleRowNamePlural()
     {
-        return \MgGoGetSsl\Facade\Config::configKey('module.row_name_plural', 's');
+        return Config::configKey('module.row_name_plural', 's');
     }
 
     /**
@@ -96,7 +95,7 @@ class MgGoGetSsl extends Module
      */
     public function moduleGroupName()
     {
-        return \MgGoGetSsl\Facade\Config::configKey('module.group_name', '');
+        return Config::configKey('module.group_name', '');
     }
 
     /**
@@ -104,7 +103,7 @@ class MgGoGetSsl extends Module
      */
     public function moduleRowMetaKey()
     {
-        return \MgGoGetSsl\Facade\Config::configKey('module.row_meta_key', '');
+        return Config::configKey('module.row_meta_key', '');
     }
 
     /**
@@ -113,7 +112,7 @@ class MgGoGetSsl extends Module
      */
     public function getPackageFields($vars = null)
     {
-        return (new \MgGoGetSsl\Processor\AdminProcessor($this, null, $vars))
+        return (new AdminProcessor($this, null, $vars))
             ->getPackageFields();
     }
 
@@ -125,7 +124,7 @@ class MgGoGetSsl extends Module
      */
     public function manageModule($module, array &$vars)
     {
-        return (new \MgGoGetSsl\Processor\AdminProcessor($this, $module, $vars))
+        return (new AdminProcessor($this, $module, $vars))
             ->manageModule();
     }
 
@@ -136,7 +135,7 @@ class MgGoGetSsl extends Module
      */
     public function manageAddRow(array &$vars)
     {
-        return (new \MgGoGetSsl\Processor\AdminProcessor($this, null, $vars))
+        return (new AdminProcessor($this, null, $vars))
             ->manageAddRow();
     }
 
@@ -147,7 +146,7 @@ class MgGoGetSsl extends Module
      */
     public function manageEditRow($moduleRow, array &$vars)
     {
-        return (new \MgGoGetSsl\Processor\AdminProcessor($this, null, $moduleRow))
+        return (new AdminProcessor($this, null, $moduleRow))
             ->manageEditRow();
     }
 
@@ -158,7 +157,7 @@ class MgGoGetSsl extends Module
      */
     public function addModuleRow(array &$vars)
     {
-        return (new \MgGoGetSsl\Processor\AdminProcessor($this, null, $vars))
+        return (new AdminProcessor($this, null, $vars))
             ->addModuleRow();
     }
 
@@ -180,7 +179,7 @@ class MgGoGetSsl extends Module
      */
     public function getClientTabs($package)
     {
-        return (new \MgGoGetSsl\Processor\ClientProcessor($this))
+        return (new ClientProcessor($this))
             ->getClientTabs($package);
     }
 
@@ -191,8 +190,9 @@ class MgGoGetSsl extends Module
      */
     public function getAdminTabs($package)
     {
-        return (new \MgGoGetSsl\Processor\AdminProcessor($this, null, null))
+        return (new AdminProcessor($this, null, null))
             ->getAdminTabs($package);
+
     }
 
     /**
@@ -207,7 +207,7 @@ class MgGoGetSsl extends Module
      */
     public function adminDetailsCert($package, $service, array $get = [], array $post = [], array $files = [])
     {
-        return (new \MgGoGetSsl\Processor\AdminProcessor($this))
+        return (new AdminProcessor($this))
             ->adminDetailsCertificate($package, $service);
     }
 
@@ -223,8 +223,24 @@ class MgGoGetSsl extends Module
      */
     public function adminContactDetailsCert($package, $service, array $get = [], array $post = [], array $files = [])
     {
-        return (new \MgGoGetSsl\Processor\AdminProcessor($this))
+        return (new AdminProcessor($this))
             ->clientContactDetailsCertificate($package, $service);
+    }
+
+    /**
+     * @throws \Exception
+     * @throws \MgGoGetSsl\Processor\GoGetSSLApiException
+     * @param \stdClass $package
+     * @param \stdClass $service
+     * @param array     $get
+     * @param array     $post
+     * @param array     $files
+     * @return string
+     */
+    public function adminManageSSL($package, $service, array $get = [], array $post = [], array $files = [])
+    {
+        return (new AdminProcessor($this))
+            ->manageSSL($package, $service);
     }
 
     /**
@@ -239,11 +255,7 @@ class MgGoGetSsl extends Module
      */
     public function adminReissueCert($package, $service, array $get = [], array $post = [], array $files = [])
     {
-        if (is_callable([$this, 'setMessage'])) {
-            $this->setMessage('co za guano', 'z tej blesty');
-        }
-
-        return (new \MgGoGetSsl\Processor\AdminProcessor($this))
+        return (new AdminProcessor($this))
             ->clientReissueCertificate($package, $service);
     }
 
@@ -259,11 +271,7 @@ class MgGoGetSsl extends Module
      */
     public function clientGenerateCert($package, $service, array $get = [], array $post = [], array $files = [])
     {
-        if (is_callable([$this, 'setMessage'])) {
-            $this->setMessage('co za guano', 'z tej blesty');
-        }
-
-        return (new \MgGoGetSsl\Processor\ClientProcessor($this))
+        return (new ClientProcessor($this))
             ->clientGenerateCertificate($package, $service);
     }
 
@@ -279,11 +287,7 @@ class MgGoGetSsl extends Module
      */
     public function clientReissueCert($package, $service, array $get = [], array $post = [], array $files = [])
     {
-        if (is_callable([$this, 'setMessage'])) {
-            $this->setMessage('co za guano', 'z tej blesty');
-        }
-
-        return (new \MgGoGetSsl\Processor\ClientProcessor($this))
+        return (new ClientProcessor($this))
             ->clientReissueCertificate($package, $service);
     }
 
@@ -299,11 +303,7 @@ class MgGoGetSsl extends Module
      */
     public function clientRenewCert($package, $service, array $get = [], array $post = [], array $files = [])
     {
-        if (is_callable([$this, 'setMessage'])) {
-            $this->setMessage('co za guano', 'z tej blesty');
-        }
-
-        return (new \MgGoGetSsl\Processor\ClientProcessor($this))
+        return (new ClientProcessor($this))
             ->clientRenewCertificate($package, $service);
     }
 
@@ -319,7 +319,7 @@ class MgGoGetSsl extends Module
      */
     public function clientDetailsCert($package, $service, array $get = [], array $post = [], array $files = [])
     {
-        return (new \MgGoGetSsl\Processor\ClientProcessor($this))
+        return (new ClientProcessor($this))
             ->clientDetailsCertificate($package, $service);
     }
 
@@ -335,7 +335,7 @@ class MgGoGetSsl extends Module
      */
     public function clientContactDetailsCert($package, $service, array $get = [], array $post = [], array $files = [])
     {
-        return (new \MgGoGetSsl\Processor\ClientProcessor($this))
+        return (new ClientProcessor($this))
             ->clientContactDetailsCertificate($package, $service);
     }
 
@@ -357,7 +357,7 @@ class MgGoGetSsl extends Module
      */
     public function getAdminServiceInfo($service, $package)
     {
-        return (new \MgGoGetSsl\Processor\AdminProcessor($this, null, null))
+        return (new AdminProcessor($this, null, null))
             ->adminServiceInfo($service, $package);
     }
 
@@ -370,11 +370,11 @@ class MgGoGetSsl extends Module
      */
     public function cancelService($package, $service, $parentPackage = null, $parentService = null)
     {
+
         if (($row = $this->getModuleRow())) {
-            return (new \MgGoGetSsl\Processor\AdminProcessor($this, null, null))
+            return (new AdminProcessor($this, null, null))
                 ->cancelService($service, $package);
         }
-
         return null;
     }
 
@@ -385,7 +385,7 @@ class MgGoGetSsl extends Module
      */
     public function editPackage($package, array $vars = null)
     {
-        return (new \MgGoGetSsl\Processor\AdminProcessor($this,null, $vars))
+        return (new AdminProcessor($this,null, $vars))
             ->editPackageValidate($package);
     }
 
@@ -396,6 +396,9 @@ class MgGoGetSsl extends Module
     {
         (new \MgGoGetSsl\Service\GoGetSslService())
             ->installModuleCommand($this);
+
+        $cron = new CronService($this);
+        $cron->createCronTask();
     }
 
     /**
@@ -404,7 +407,10 @@ class MgGoGetSsl extends Module
     public function uninstall($moduleId, $lastInstance)
     {
         (new \MgGoGetSsl\Service\GoGetSslService())
-            ->uninstalModuleCommands();
+            ->uninstalModueCommands();
+
+        $cron = new CronService($this);
+        $cron->deleteCronTask($lastInstance);
     }
 
     /**
@@ -412,7 +418,20 @@ class MgGoGetSsl extends Module
      */
     public function upgrade($currentVersion)
     {
-
+        $cron = new CronService($this);
+        $cron->createCronTask();
     }
 
+    /**
+     * @return void
+     */
+    public function cron($key)
+    {
+        switch ($key) {
+            case "go_get_order_cancellation":
+                $cronService = new CronService($this);
+                $cronService->cancelCertificate();
+                break;
+        }
+    }
 }

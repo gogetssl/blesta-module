@@ -5,6 +5,7 @@ namespace MgGoGetSsl\Processor;
 use MgGoGetSsl\Facade\Log;
 use MgGoGetSsl\Facade\Lang;
 use MgGoGetSsl\Facade\Config;
+use MgGoGetSsl\Service\ClientService;
 use MgGoGetSsl\Util\Inflector;
 use MgGoGetSsl\API\GoGetSSLApi;
 use MgGoGetSsl\Util\HttpHelper;
@@ -159,7 +160,7 @@ class AdminProcessor
             }
         }
 
-        $fields->setField($fields->label(\MgGoGetSsl\Facade\Lang::translate('certificate_type'))
+        $fields->setField($fields->label(Lang::translate('certificate_type'))
             ->attach($fields->fieldSelect(
                 'meta[certificate_type]',
                 $productsArray,
@@ -169,7 +170,7 @@ class AdminProcessor
             ))
         );
 
-        $fields->setField($fields->label(\MgGoGetSsl\Facade\Lang::translate('months'))
+        $fields->setField($fields->label(Lang::translate('months'))
             ->attach($fields->fieldText(
                 'meta[months]',
                 $this->module->Html->ifSet($this->vars->meta['months']), [
@@ -178,7 +179,7 @@ class AdminProcessor
             ))
         );
 
-        $fields->setField($fields->label(\MgGoGetSsl\Facade\Lang::translate('included_sans'))
+        $fields->setField($fields->label(Lang::translate('included_sans'))
             ->attach($fields->fieldText(
                 'meta[included_sans]',
                 $this->module->Html->ifSet($this->vars->meta['included_sans']), [
@@ -187,7 +188,7 @@ class AdminProcessor
             ))
         );
 
-        $fields->setField($fields->label(\MgGoGetSsl\Facade\Lang::translate('enable_sans'))
+        $fields->setField($fields->label(Lang::translate('enable_sans'))
             ->attach($fields->fieldCheckbox(
                 'meta[enable_sans]',
                 1,
@@ -230,7 +231,7 @@ class AdminProcessor
             $metaFields = [
                 'api_username', 'api_password', 'use_admin_contact', 'tech_firstname', 'tech_lastname',
                 'tech_organization', 'tech_addressline1', 'tech_phone', 'tech_title', 'tech_email', 'tech_city',
-                'tech_country', 'tech_fax', 'tech_postalcode', 'tech_region'
+                'tech_country', 'tech_fax', 'tech_postalcode', 'tech_region',
             ];
             $encryptedFields = ['api_password'];
             
@@ -271,20 +272,11 @@ class AdminProcessor
         }
     }
 
-    /**
-     * @throws \Exception
-     * @param \stdClass $package
-     * @return array
-     */
-    public function getAdminTabs($package)
+    private function createServiceAdminTabs($package)
     {
-        if ($package->module_id != (new GoGetSslService())
-            ->getGoGetSslModuleId()
-        ) {
+        if ($package->module_id != (new GoGetSslService())->getGoGetSslModuleId()) {
             return [];
         }
-
-        $tabs = [];
 
         $url = Runtime::request()->url(true);
         $matches = [];
@@ -293,33 +285,112 @@ class AdminProcessor
             $url .= '/';
         }
 
-        preg_match("/clients\/editservice\/(.*?)\/(.*?)\//s", $url, $matches);
-        
+        if(strpos($url, "editservice"))
+        {
+            preg_match("/clients\/editservice\/(.*?)\/(.*?)\//s", $url, $matches);
+
+        } elseif (strpos($url, "servicetab")) {
+
+            preg_match("/clients\/servicetab\/(.*?)\/(.*?)\//s", $url, $matches);
+        }
+
+
         if (!isset($matches[2]) || !is_numeric($matches[2])) {
             return [];
         }
 
         $serviceId = $matches[2];
+
         $service = (new BlestaService())
             ->getService($serviceId);
 
         if (!$service || $service->status != 'active') {
-            return [];
+            return false;
         }
 
         $clientCertificate = (new GoGetSslService())
             ->getClientCertificateData($serviceId, $matches[1]);
 
         if (!empty($clientCertificate)) {
-            $orderId = $clientCertificate->order_id;
-            //$orderStatus = $this->api->getOrderStatus($orderId);
+            return array(
+                'adminDetailsCert'        => Lang::translate('certificate_details'),
+                'adminManageSSL'          => Lang::translate('manage_ssl'),
+                'adminReissueCert'        => Lang::translate('reissue_certificate'),
+                'adminContactDetailsCert' => Lang::translate('contact_management_certificate'),
 
-            $tabs['adminDetailsCert'] = Lang::translate('certificate_details');
-            $tabs['adminReissueCert'] = Lang::translate('reissue_certificate');
-            $tabs['adminContactDetailsCert'] = Lang::translate('contact_management_certificate');
+            );
+
+        }
+        return [
+            'adminManageSSL' => Lang::translate('manage_ssl')
+        ];
+    }
+
+    /**
+     * @throws \Exception
+     * @param \stdClass $package
+     * @return array
+     */
+    public function getAdminTabs($package)
+    {
+        return $this->createServiceAdminTabs($package);
+    }
+
+    public function manageSSL($package, $service)
+    {
+        $error = false;
+
+        $url = Runtime::request()->url(true);
+        $matches = [];
+
+        if (substr($url, -1, 1) != '/') {
+            $url .= '/';
+        }
+        preg_match("/clients\/servicetab\/(.*?)\/(.*?)\//s", $url, $matches);
+
+        $serviceUrl = 'http://'.$GLOBALS['_SERVER']['HTTP_HOST'].'/client/services/manage/'.$matches[2];
+        $_SESSION['blesta_client_id'] = $matches[1];
+
+        try {
+            if (!isset($matches[1]) || empty($matches[1])) {
+                throw new \RuntimeException(Lang::translate('client_not_found'));
+            }
+
+            $config = $this->getModuleConfiguration();
+            $api = $this->getAPI($config->api_username, $config->api_password);
+
+            $certificateProcessor = (new CertificateProcessor($api, $package, $service, $config, $matches[1]))
+                ->processCertificateDetails();
+
+            $this->initView('admin-manage-ssl');
+            $this->view->set("admin_manage_ssl_info", Lang::translate('manage_ssl_info'));
+            $this->view->set("service_url", $serviceUrl);
+
+        } catch (\RuntimeException $e) {
+
+            if($e->getMessage() == Lang::translate('client_cert_data_not_available'))
+            {
+                $this->initView('admin-manage-ssl');
+                $this->view->set("admin_manage_ssl_info", Lang::translate('manage_ssl_info_generate'));
+                $this->view->set("service_url", $serviceUrl);
+
+                return $this->view->fetch();
+            }
+            $error = true;
+            FlashMessage::error($e->getMessage());
+            Log::logError($e->getMessage(), LogService::NAMESPACE_CERT_DETAILS, $e->getTraceAsString());
+        } catch (\Exception $e) {
+            $error = true;
+            FlashMessage::error(Lang::translate('general_error'));
+            Log::logError($e->getMessage(), LogService::NAMESPACE_CERT_DETAILS, $e->getTraceAsString());
         }
 
-        return $tabs;
+        if ($error) {
+            return $this->errors();
+        }
+
+        $this->view->set('messages', FlashMessage::messages());
+        return $this->view->fetch();
     }
 
     /**
@@ -332,7 +403,6 @@ class AdminProcessor
     public function adminDetailsCertificate($package, $service)
     {
         $error = false;
-
         $url = Runtime::request()->url(true);
         $matches = [];
 
@@ -492,6 +562,56 @@ class AdminProcessor
         return $this->view->fetch();
     }
 
+
+    /**
+     * @throws \Exception
+     * @throws GoGetSSLApiException
+     * @param \stdClass $package
+     * @param \stdClass $service
+     * @return string
+     */
+    public function clientRenewCertificate($package, $service)
+    {
+
+        $this->service = $service;
+        $this->package = $package;
+
+        $error = false;
+
+        try {
+
+            $config = $this->getModuleConfiguration();
+            $api = $this->getAPI($config->api_username, $config->api_password);
+
+            $certificateProcessor = (new CertificateProcessor($api, $package, $service, $config))
+                ->processCertificateGenerate();
+
+            $step = $certificateProcessor->getCurrentStep();
+
+            $this->initView('generate_cert_step' . $step);
+
+            foreach ($certificateProcessor->variables() as $key => $value) {
+                $this->view->set($key, $value);
+            }
+
+        } catch (\RuntimeException $e) {
+            $error = true;
+            FlashMessage::error($e->getMessage());
+            Log::logError($e->getMessage(), LogService::NAMESPACE_CERT_GENERATE, $e->getTraceAsString());
+        } catch (\Exception $e) {
+            $error = true;
+            FlashMessage::error(Lang::translate('general_error'));
+            Log::logError($e->getMessage(), LogService::NAMESPACE_CERT_GENERATE, $e->getTraceAsString());
+        }
+
+        if ($error) {
+            return $this->errors();
+        }
+
+        $this->view->set('messages', FlashMessage::messages());
+        return $this->view->fetch();
+    }
+
     /**
      * @throws \Exception
      * @param \stdClass $service
@@ -561,7 +681,6 @@ class AdminProcessor
 
             $domainsData = [];
             $domains[] = $orderStatus['domain'];
-//            $emails = ['admin', 'administrator', 'hostmaster', 'postmaster', 'webmaster'];
 
             if (isset($orderStatus['san']) && !empty($orderStatus['san'])) {
                 foreach ($orderStatus['san'] as $san) {
@@ -572,10 +691,6 @@ class AdminProcessor
             foreach ($domains as $domain) {
                 $emailsAssoc = [];
                 $emailsArray = $api->getDomainEmails($domain);
-
-//                $emailsArray = array_map(function ($item) use ($domain) {
-//                    return sprintf('%s@%s', $item, $domain);
-//                }, $emails);
 
                 foreach ($emailsArray as $email) {
                     $emailsAssoc[$email] = $email;
@@ -612,6 +727,9 @@ class AdminProcessor
             $this->view->set('serviceId', $service->id);
             $this->view->set('orderData', $orderStatus);
             $this->view->set('isBlesta36', (new BlestaService())->isBlesta36());
+
+
+
         } catch (GoGetSSLApiException $e) {
             FlashMessage::error($e->getMessage());
             Log::logError($e->getMessage(), LogService::NAMESPACE_CERT_DETAILS, $e->getTraceAsString());
@@ -627,11 +745,19 @@ class AdminProcessor
     /**
      * @param \stdClass $service
      * @param \stdClass $package
-     * @return string|void
+     * @return string
      */
     public function cancelService($service, $package)
     {
+
         $error = false;
+        $message = "";
+
+        $reason = $_POST['cancellation_reason'];
+        if(empty($reason))
+        {
+            $reason = 'Order canceled for non-payment';
+        }
 
         try {
             $config = $this->getModuleConfiguration();
@@ -640,21 +766,23 @@ class AdminProcessor
             if ($clientCertificate = (new GoGetSslService())
                 ->getClientCertificateData($service->id, $service->client_id)
             ) {
-                $api->cancelOrder($clientCertificate->order_id, 'Order canceled for non-payment');
+                $api->cancelOrder($clientCertificate->order_id, $reason);
             }
         } catch (\RuntimeException $e) {
             $error = true;
-            FlashMessage::error($e->getMessage());
+            $message = $e->getMessage();
             Log::logError($e->getMessage(), LogService::NAMESPACE_CERT_CANCEL, $e->getTraceAsString());
         } catch (\Exception $e) {
             $error = true;
-            FlashMessage::error(Lang::translate('general_error'));
+            $message = $e->getMessage();
             Log::logError($e->getMessage(), LogService::NAMESPACE_CERT_CANCEL, $e->getTraceAsString());
         }
 
         if ($error) {
-            return $this->errors();
+            $this->module->Input->setErrors(array('api' => array('response' => $message)));
         }
+
+        return null;
     }
 
     /**
@@ -669,11 +797,11 @@ class AdminProcessor
         if ((new GoGetSslService())->getGoGetSslModuleId() == $moduleId
             && (!isset($vars['meta']['certificate_type']) || empty($vars['meta']['certificate_type']))
         ) {
-//            $this->module->Input->setErrors([
-//                'api' => [
-//                    'response' => Lang::translate('empty_module_configuration')
-//                ]
-//            ]);
+            $this->module->Input->setErrors([
+                'api' => [
+                    'response' => Lang::translate('empty_module_configuration')
+                ]
+            ]);
             $vars['meta'] = (array) $package->meta;
         }
         
@@ -696,6 +824,8 @@ class AdminProcessor
     {
         $act = Runtime::request()->get('act');
         $serviceId = Runtime::request()->get('service_id');
+        $clientService = new ClientService();
+        $client = $clientService->getClientByServiceId($serviceId);
 
         foreach ($this->module->getModuleRows() as $row) {
             if (isset($row->meta->api_username)) {
@@ -710,18 +840,18 @@ class AdminProcessor
         if (!isset($apiCredentials)) {
             echo json_encode([
                 'status'  => 'error',
-                'message' => FlashMessage::staticMessage('error', 'api_credentials_invalid'),
+                'message' => FlashMessage::staticMessage('error', Lang::translate('api_credentials_invalid')),
                 'refresh' => 0,
             ]);
             die;
         }
 
         if (!$clientCertificateData = (new GoGetSslService())
-            ->getClientCertificateData($serviceId)
+            ->getClientCertificateData($serviceId,  $client->contact->id)
         ) {
             echo json_encode([
                 'status'  => 'error',
-                'message' => FlashMessage::staticMessage('error', 'client_cert_data_not_available'),
+                'message' => FlashMessage::staticMessage('error', Lang::translate('client_cert_data_not_available')),
                 'refresh' => 0,
             ]);
             die;
@@ -732,6 +862,23 @@ class AdminProcessor
         $orderId = $clientCertificateData->order_id;
 
         switch ($act) {
+
+            case 'resend_certificate_email':
+                try {
+                    $certificateData['orderData']['domain']   = $_REQUEST['domain'];
+                    $certificateData['orderData']['ca_code']  = $_REQUEST['ca_code'];
+                    $certificateData['orderData']['crt_code'] = $_REQUEST['crt_code'];
+
+                    $blestaService = new BlestaService();
+                    $result = $blestaService->resendCertificateEmail($client, $certificateData);
+                    $status = $result['status'];
+                    $message = $result['message'];
+                } catch (\Exception $e) {
+                    $status = 'error';
+                    $message = Lang::translate('general_error');
+                }
+                break;
+
             case 'resend_validation_email':
                 try {
                     $api = $this->getApi($apiCredentials['username'], $apiCredentials['password']);
@@ -741,8 +888,7 @@ class AdminProcessor
                     $status = 'error';
                     $message = $e->getMessage();
                 } catch (\Exception $e) {
-                    $status = 'error';
-                    $message = Lang::translate('general_error');
+
                 }
                 break;
 
@@ -903,9 +1049,9 @@ class AdminProcessor
                 }
 
                 (new PackageService())
-                    ->updatePackage($package, [
+                    ->updatePackage($package, array(
                         'status' => $packageStatus
-                    ]);
+                    ));
 
                 $status = 'success';
                 $packageStatusText = Lang::translate(sprintf('status_%s', $packageStatus));
@@ -1555,5 +1701,4 @@ class AdminProcessor
 
         return $this->view->fetch();
     }
-
 }

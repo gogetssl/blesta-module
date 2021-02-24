@@ -26,14 +26,13 @@
     background-color: #f6fafe; }
 
 .ssl-conf-table {
-  width: 100%;
   border: none;
   margin-top: 25px; }
   .ssl-conf-table th {
     padding-bottom: 10px; }
   .ssl-conf-table td {
-    padding-right: 10px;
-    padding-bottom: 10px; }
+    padding: 7px 6px !important;
+    line-height:  14px !important;}
 
 .separator {
   clear: both;
@@ -101,6 +100,7 @@ label {
   visibility: hidden;
   margin-bottom: 40px;
   background-color: white;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
   box-shadow: 7px 7px 10px rgba(0, 0, 0, 0.35);
   -o-box-shadow: 7px 7px 10px rgba(0, 0, 0, 0.35);
   -ms-box-shadow: 7px 7px 10px rgba(0, 0, 0, 0.35);
@@ -113,6 +113,8 @@ label {
   -webkit-transition: opacity 0.4s, top 0.4s ease-in-out; }
 
 #action-modal .modal-title {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  height: 48px !important;
   color: white;
   font-size: 20px;
   font-weight: 300;
@@ -121,6 +123,8 @@ label {
   margin: -20px -20px 20px -20px; }
 
 #action-modal .content {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+  font-size: 14px !important;
   margin: 0;
   opacity: 1;
   width: 100%;
@@ -145,7 +149,7 @@ label {
   display: inline-block; }
 
 #action-modal .close-button {
-  top: -8px;
+  top: -6px;
   right: 10px;
   width: 30px;
   color: white;
@@ -182,6 +186,7 @@ label {
 
 .button .text {
   color: white;
+  text-align: center !important;
   transition: color 0.2s ease-in-out;
   -o-transition: color 0.2s ease-in-out;
   -ms-transition: color 0.2s ease-in-out;

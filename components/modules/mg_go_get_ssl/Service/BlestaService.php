@@ -210,4 +210,56 @@ class BlestaService
         Log::logInfo('Mail sent!');
     }
 
+    public function resendCertificateEmail($client, $certificateData)
+    {
+
+        try
+        {
+            $from     = "no-reply@".$_SERVER['SERVER_NAME'];
+            $fromName = "Blesta Service";
+            $to       =  $client->contact->email;
+            $subject  = "SSL Certificate Details for domain ".'"'.$certificateData['orderData']['domain'].'"';
+            $body = array(
+                'html' => "<strong>Dear, {first_name} {last_name} </strong>
+<br>
+<p><strong>Domain: </strong>{domain}</p>
+<p><strong>Intermediate certificate:</strong></p>
+<pre>{ssl_certificate}</pre>
+<p><strong>CRT</strong><p>
+<pre>{crt_code}</pre>
+"
+            );
+
+            $tags = array(
+                'first_name'      => $client->contact->first_name,
+                'last_name'       => $client->contact->last_name,
+                'domain'          => $certificateData['orderData']['domain'],
+                'ssl_certificate' => $certificateData['orderData']['ca_code'],
+                'crt_code'        => $certificateData['orderData']['crt_code']
+            );
+
+            $result = $this->Emails->sendCustom($from, $fromName, $to, $subject, $body, $tags);
+
+            if($result)
+            {
+                Log::logSuccess(Lang::translate('resend_certificate_success'));
+                return [
+                    'status' => 'success',
+                    'message' => Lang::translate('resend_certificate_success'),
+                ];
+            }
+            else
+            {
+                Log::logError(Lang::translate('resend_certificate_error'));
+                return [
+                    'status' => 'error',
+                    'message' => Lang::translate('resend_certificate_error'),
+                ];
+            }
+        } catch (\Exception $e) {
+            Log::logError('Resend Certificate Mail - status: failed, reason: '.$e->getMessage());
+            throw new \Exception('Resend Certificate failed, reason: '.$e->getMessage());
+        }
+
+    }
 }

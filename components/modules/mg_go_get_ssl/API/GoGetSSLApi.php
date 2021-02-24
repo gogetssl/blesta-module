@@ -166,7 +166,7 @@ class GoGetSSLApi extends API
      */
     public function getOrderStatus($orderId)
     {
-        $this->sendGET($this->resourcePath('/orders/status/ '. $orderId));
+        $this->sendGET($this->resourcePath('/orders/status/'. (int) $orderId));
         $this->handleError();
 
         return $this->response();
@@ -260,10 +260,12 @@ class GoGetSSLApi extends API
      */
     public function cancelOrder($orderId, $reason)
     {
+
         $this->sendPOST($this->resourcePath('/orders/cancel_ssl_order/', true), [
             'order_id' => $orderId,
             'reason'   => $reason
         ]);
+
         $this->handleError();
 
         return $this->response();

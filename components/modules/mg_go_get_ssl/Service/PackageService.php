@@ -11,6 +11,7 @@ class PackageService
 {
 
     const PACKAGES_TABLE = 'packages';
+    const PACKAGE_NAMES_TABLE = 'package_names';
     const PRICINGS_TABLE = 'pricings';
     const PACKAGE_PRICING_TABLE = 'package_pricing';
     const PACKAGE_META_TABLE = 'package_meta';
@@ -89,7 +90,8 @@ class PackageService
 
             $this->Record->insert(self::PACKAGES_TABLE, $data);
             $packageId = $this->Record->lastInsertId();
-            
+
+            $this->savePackageName($packageId, $data);
             $this->savePackagePricing($packageId, $pricingData);
             $this->savePackageMeta($packageId, $metaData);
             $this->savePackageGroups($packageId, $groups);
@@ -128,6 +130,8 @@ class PackageService
                 unset($data['groups']);
             }
 
+            $name = isset($data['name']) ? $data['name'] : null;
+
             $this->Record
                 ->where('id', '=', $packageId)
                 ->update(self::PACKAGES_TABLE, $data);
@@ -143,6 +147,11 @@ class PackageService
                 $this->removePackageGroups($packageId);
                 $this->savePackageGroups($packageId, $groups);
             }
+            if (!empty($name)) {
+                $this->updatePackageName($packageId, $data);
+            }
+
+
         } catch (\Exception $e) {
             $this->Record->rollback();
             throw $e;
@@ -374,4 +383,30 @@ class PackageService
         }
     }
 
+    /**
+     * @param int   $packageId
+     * @param array $data
+     */
+    private function savePackageName($packageId, array $data)
+    {
+        $this->Record->insert(self::PACKAGE_NAMES_TABLE , [
+            'package_id' => $packageId,
+            'lang'       => 'en_us',
+            'name'       => $data['name'],
+        ]);
+    }
+
+        /**
+     * @param int   $packageId
+     * @param array $data
+     */
+    private function updatePackageName($packageId, array $data)
+    {
+        $this->Record
+            ->where('package_id', '=', $packageId)
+            ->where('lang', '=', 'en_us')
+            ->update(self::PACKAGE_NAMES_TABLE, [
+                'name' => $data['name'],
+            ]);
+    }
 }
