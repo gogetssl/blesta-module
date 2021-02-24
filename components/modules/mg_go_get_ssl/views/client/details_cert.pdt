@@ -111,6 +111,12 @@
                             <strong style='word-wrap: break-word'><?php echo $approverMethodData['record'] ?></strong>
                         </div>
                     </div>
+                <?php elseif($approverMethod == 'email'): ?>
+                    <div class='row row-margin'>
+                        <div class='col-sm-8'>
+                            <strong style='word-wrap: break-word'> <?php echo $this->_('approver_method_message').$orderData['approver_method']['email'] ?> </strong>
+                        </div>
+                    </div>
                 <?php endif ?>
             </div>
 
@@ -138,6 +144,18 @@
         </div>
     </div>
 <?php endif ?>
+
+<?php if (isset($orderData['csr_code']) && !empty($orderData['csr_code'])): ?>
+    <div class='row row-margin'>
+        <div class='col-sm-4 text-right'>
+            <?php echo $this->_('csr_code') ?>
+        </div>
+        <div class='col-sm-7'>
+            <textarea style='width: 100%' rows='8'><?php echo $orderData['csr_code'] ?></textarea>
+        </div>
+    </div>
+<?php endif ?>
+
 <?php if (isset($orderData['crt_code']) && !empty($orderData['crt_code'])): ?>
     <div class='row row-margin'>
         <div class='col-sm-4 text-right'>
@@ -229,7 +247,7 @@
 <?php endif ?>
 
 <br/><br/>
-<?php if (isset($orderData['approver_method']) && !empty($orderData['approver_method']) && is_string($orderData['approver_method'])): ?>
+<?php if (isset($orderData['approver_method']) && !empty($orderData['approver_method']) && is_array($orderData['approver_method'])): ?>
     <button type='button' data-url='?action=resend_validation_email' class='button button--sm button--info preloader perform-ajax-action'>
         <span class='preloader'></span>
         <span class='text'><?php echo $this->_('resend_validation_email') ?></span>

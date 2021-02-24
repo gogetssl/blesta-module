@@ -213,8 +213,6 @@ abstract class API
         if (in_array($this->method, ['POST', 'PUT', 'PATCH'])) {
             $opts[CURLOPT_POST] = true;
             $opts[CURLOPT_POSTFIELDS] = $this->data;
-
-            //$headers[] = sprintf('Content-Length: %s', strlen($this->data));
         }
 
         if (is_callable($callback = [$this, 'extendHeaders'])) {

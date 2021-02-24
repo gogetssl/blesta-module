@@ -214,6 +214,7 @@ class GoGetSslService
                 ])
                 ->setKey(['id'], 'primary')
                 ->create(self::GO_GET_SSL_ORDERS_TABLE);
+
         } catch (\Exception $e) {
             Log::logError($e->getMessage(), LogService::NAMESPACE_INSTALLATION, $e->getTraceAsString());
         }

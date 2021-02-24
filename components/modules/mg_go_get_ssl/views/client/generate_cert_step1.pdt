@@ -1,5 +1,6 @@
 <link href='<?php echo $this->view_dir ?>assets/css/style.css' rel='stylesheet' type='text/css'/>
 <script type='text/javascript' src='<?php echo $this->view_dir ?>assets/js/scripts.js'></script>
+<script type='text/javascript' src='<?php echo $this->view_dir ?>assets/js/MgGoGetSSL.js'></script>
 
 <div class='module-messages'>
     <?php foreach ($messages as $type => $messagesByType): ?>
@@ -18,10 +19,10 @@
 
         <div class='form-group'>
             <?php
-                $this->Form->label($this->_('order_type', true), 'order_type');
-                $this->Form->fieldSelect('order_type', $orderTypes, $data['order_type'], [
-                    'class' => 'form-control'
-                ]);
+            $this->Form->label($this->_('order_type', true), 'order_type');
+            $this->Form->fieldSelect('order_type', $orderTypes, $data['order_type'], [
+                'class' => 'form-control'
+            ]);
             ?>
         </div>
 
@@ -29,34 +30,37 @@
 
         <div class='form-group'>
             <?php
-                $this->Form->label($this->_('web_server_type', true), 'web_server_type');
-                $this->Form->fieldSelect('web_server_type', $webServerTypes, $data['web_server_type'], [
-                    'class' => 'form-control'
-                ]);
+            $this->Form->label($this->_('web_server_type', true), 'web_server_type');
+            $this->Form->fieldSelect('web_server_type', $webServerTypes, $data['web_server_type'], [
+                'class' => 'form-control'
+            ]);
             ?>
         </div>
         <div class='form-group'>
             <?php
-                $this->Form->label($this->_('csr', true), 'csr');
-                $this->Form->fieldTextarea('csr', $data['csr'], [
-                    'class' => 'form-control',
-                    'rows'  => 5
-                ]);
+            $this->Form->label($this->_('csr', true), 'csr');
+            $this->Form->fieldTextarea('csr', $data['csr'], [
+                'class' => 'form-control',
+                'rows'  => 5
+            ]);
             ?>
         </div>
 
         <?php if ($sansEnabled && $includedSans): ?>
             <div class='form-group' style='margin-bottom: 3px'>
                 <?php
-                    $this->Form->label($this->_('sans_domains', true) . ' (' . $includedSans . ')', 'sans_domains');
-                    $this->Form->fieldTextarea('sans_domains', $data['sans_domains'], [
-                        'class' => 'form-control',
-                        'rows'  => 5
-                    ]);
+                $this->Form->label($this->_('sans_domains', true) . ' (' . $includedSans . ')', 'sans_domains');
+                $this->Form->fieldTextarea('sans_domains', $data['sans_domains'], [
+                    'class' => 'form-control',
+                    'rows'  => 5
+                ]);
                 ?>
             </div>
             <p><?php $this->_('sans_domains_desc') ?></p>
         <?php endif ?>
+
+        <button type='button' class="pull-right btn btn-primary" id="generateCsrBtn">Generate CSR</button>
+        <br/>
 
         <br/>
         <h3><?php echo $this->_('administrative_contact_information') ?></h3>
@@ -339,10 +343,10 @@
         <br/>
         <div class='col-sm-12'>
             <div class='button_row'>
-                <button type='submit' class='pull-right btn btn-primary submit'><?php $this->_('continue') ?></button>
+                <button id='continueBtn' type='button' class='pull-right btn btn-primary submit'><?php $this->_('continue') ?></button>
             </div>
         </div>
-
         <?php $this->Form->end() ?>
     </div>
 </div>
+

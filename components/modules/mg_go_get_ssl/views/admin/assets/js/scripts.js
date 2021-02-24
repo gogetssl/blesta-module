@@ -1,3 +1,8 @@
+$(function() {
+    $('#plugin_support_manager_admin_tickets_client').css('z-index', 0);
+    $('#admin_clients_transactions').css('z-index', 0);
+});
+
 var ajax = function (url, type, data, before, success, complete, error) {
     if (!type) {
         type = 'POST';
@@ -66,10 +71,10 @@ var showActionModal = function(container) {
         opacity: 1
     });
     container.find('.action-modal').addClass('open');
-
-    $('.common_box .common_box_inner').css({overflow: 'visible'});
+    container.find('#admin_clients_transactions').css({top: -1, visibility: 'hidden'});
 };
 var closeActionModal = function() {
+
     $('.action-modal').css({
         top: '40%',
         opacity: 0,
@@ -84,9 +89,7 @@ var closeActionModal = function() {
     });
     $('.action-modal .response').html('');
     $('.action-modal').removeClass('open');
-    setTimeout(function() {
-        $('.common_box .common_box_inner').css({overflow: 'hidden'});
-    }, 500);
+
 };
 
 $(function() {

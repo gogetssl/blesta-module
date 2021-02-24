@@ -27,6 +27,7 @@ class ClientProcessor
 
     /** @var \stdClass|null */
     protected $package;
+    private $redirect;
 
     /**
      * ClientProcessor constructor
@@ -118,6 +119,7 @@ class ClientProcessor
         $error = false;
 
         try {
+
             $config = $this->getModuleConfiguration();
             $api = $this->getAPI($config->api_username, $config->api_password);
 
@@ -125,11 +127,13 @@ class ClientProcessor
                 ->processCertificateGenerate();
 
             $step = $certificateProcessor->getCurrentStep();
+
             $this->initView('generate_cert_step' . $step);
 
             foreach ($certificateProcessor->variables() as $key => $value) {
                 $this->view->set($key, $value);
             }
+
         } catch (\RuntimeException $e) {
             $error = true;
             FlashMessage::error($e->getMessage());
@@ -218,6 +222,7 @@ class ClientProcessor
             foreach ($certificateProcessor->variables() as $key => $value) {
                 $this->view->set($key, $value);
             }
+
         } catch (\RuntimeException $e) {
             $error = true;
             FlashMessage::error($e->getMessage());
@@ -319,7 +324,6 @@ class ClientProcessor
 
         if ($error) {
             return $this->errors();
-            HttpHelper::redirect($this->getClientUrl('clientDetailsCert'));
         }
 
         $this->view->set('messages', FlashMessage::messages());

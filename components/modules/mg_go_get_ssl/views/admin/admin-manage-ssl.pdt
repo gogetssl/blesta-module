@@ -1,0 +1,36 @@
+<link href='<?php echo $this->view_dir ?>assets/css/style.css' rel='stylesheet' type='text/css'/>
+<script type='text/javascript' src='<?php echo $this->view_dir ?>assets/js/scripts.js'></script>
+
+<div class='module-messages'>
+    <?php foreach ($messages as $type => $messagesByType): ?>
+        <?php foreach ($messagesByType as $message): ?>
+            <div class='alert alert-<?= $type ?>'><?= $message ?></div>
+        <?php endforeach ?>
+    <?php endforeach ?>
+</div>
+
+<div class='row'>
+    <div class='col-md-12'>
+        <h3 style='margin-top: 0'><?php echo $this->_('admin_manage_ssl_title') ?></h3>
+        <p><?php echo $admin_manage_ssl_info ?></p>
+        <p id="serviceUrl" hidden><?php echo $service_url ?></p>
+
+        <?php $this->Form->create() ?>
+
+        <br/>
+        <div class='col-sm-12'>
+            <div class='button_row'>
+                <button id="continueManageBtn" type='button' class='pull-right btn btn-primary submit' id="continueManageBtn"><?php $this->_('continue') ?></button>
+            </div>
+        </div>
+
+        <?php $this->Form->end() ?>
+    </div>
+</div>
+
+<script>
+    $('#continueManageBtn').on('click', function () {
+       serviceUrl = $("#serviceUrl").text();
+       window.open(serviceUrl);
+    });
+</script>

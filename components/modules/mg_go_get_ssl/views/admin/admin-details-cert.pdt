@@ -2,7 +2,7 @@
 <script type='text/javascript' src='<?php echo $this->view_dir ?>assets/js/scripts.js'></script>
 
 <?php if ($isBlesta36): ?>
-    <link href='<?php echo $this->view_dir ?>assets/css/style36.css' rel='stylesheet' type='text/css'/>
+  <link href='<?php echo $this->view_dir ?>assets/css/style36.css' rel='stylesheet' type='text/css'/>
 <?php endif ?>
 
 <div class='border-box-sizing'>
@@ -116,6 +116,12 @@
                                 <strong style='word-wrap: break-word'><?php echo $approverMethodData['record'] ?></strong>
                             </div>
                         </div>
+                    <?php elseif($approverMethod == 'email'): ?>
+                        <div class='row row-margin'>
+                            <div class='col-sm-8'>
+                                <strong style='word-wrap: break-word'> <?php echo $this->_('approver_method_message').$orderData['approver_method']['email'] ?> </strong>
+                            </div>
+                        </div>
                     <?php endif ?>
                 </div>
 
@@ -143,6 +149,18 @@
             </div>
         </div>
     <?php endif ?>
+
+    <?php if (isset($orderData['csr_code']) && !empty($orderData['csr_code'])): ?>
+        <div class='row row-margin'>
+            <div class='col-sm-4 text-right'>
+                <?php echo $this->_('csr_code') ?>
+            </div>
+            <div class='col-sm-7'>
+                <textarea style='width: 100%' rows='8'><?php echo $orderData['csr_code'] ?></textarea>
+            </div>
+        </div>
+    <?php endif ?>
+
     <?php if (isset($orderData['crt_code']) && !empty($orderData['crt_code'])): ?>
         <div class='row row-margin'>
             <div class='col-sm-4 text-right'>
@@ -234,7 +252,7 @@
     <?php endif ?>
 
     <br/><br/>
-    <?php if (isset($orderData['approver_method']) && !empty($orderData['approver_method']) && is_string($orderData['approver_method'])): ?>
+    <?php if (isset($orderData['approver_method']) && !empty($orderData['approver_method']) && is_array($orderData['approver_method'])): ?>
         <button type='button' data-url='?action=resend_validation_email' class='button button--sm button--info preloader perform-ajax-action'>
             <span class='preloader'></span>
             <span class='text'><?php echo $this->_('resend_validation_email') ?></span>
@@ -291,7 +309,7 @@
                                 <input type='hidden' name='<?php echo 'domains[' . $domain['domain'] . '][domain]' ?>' value='<?php echo $domain['domain'] ?>'/>
                                 <input type='hidden' name='<?php echo 'domains[' . $domain['domain'] . '][is_main]' ?>' value='<?php echo (int) ($domain['domain'] == $mainDomain) ?>'/>
 
-                                <td style='padding-right: 5px'><?php echo $domain['domain'] ?></td>
+                                <td><?php echo $domain['domain'] ?></td>
                                 <td>
                                     <?php $this->Form->fieldSelect('domains[' . $domain['domain'] . '][method]', $methods, null, [
                                         'class' => 'form-control dcv-method-select',
@@ -315,6 +333,11 @@
             </form>
         </div>
     <?php else: ?>
+        <button type='button' data-url='?action=resend_certificate_email' class='button button--sm button--info preloader perform-ajax-action'>
+            <span class='preloader'></span>
+            <span class='text'><?php echo $this->_('resend_certificate') ?></span>
+        </button>
+
         <a href='<?php echo $reissueHref ?>' class='button button--sm button--info'>
             <span class='preloader'></span>
             <span class='text'><?php echo $this->_('reissue_certificate') ?></span>
