@@ -1,6 +1,7 @@
 <?php
 
 use MgGoGetSsl\Event\ServiceAdd;
+use MgGoGetSsl\Event\ServiceEdit;
 use MgGoGetSsl\Facade\Config;
 use MgGoGetSsl\Facade\Lang;
 use MgGoGetSsl\Processor\AdminProcessor;
@@ -14,7 +15,7 @@ class MgGoGetSsl extends Module
     /** @var array */
     private $events = [
         'Services.add'  => ServiceAdd::class,
-        'Services.edit' => \MgGoGetSsl\Event\ServiceEdit::class,
+        'Services.edit' => ServiceEdit::class,
     ];
 
     /**
@@ -33,18 +34,21 @@ class MgGoGetSsl extends Module
         }
 
         if ((new BlestaService())->isBlesta36()) {
-            $compontents = ['Input', 'Events'];
+            $components = ['Input', 'Events'];
         } else {
-            $compontents = ['Input', 'Emails', 'EmailGroups', 'Events'];
+            $components = ['Input', 'Emails', 'EmailGroups'];
         }
 
-        Loader::loadComponents($this, $compontents);
+        Loader::loadComponents($this, $components);
+
+        $eventFactory = $this->getFromContainer('util.events');
+        $eventListener = $eventFactory->listener();
 
         foreach ($this->events as $event => $class) {
             $classObject = new $class;
 
             if (is_callable($callback = [$classObject, 'handle'])) {
-                $this->Events->register($event, call_user_func($callback));
+                $eventListener->register($event, call_user_func($callback));
             }
         }
     }
@@ -62,7 +66,7 @@ class MgGoGetSsl extends Module
      */
     public function getVersion()
     {
-        return Config::configKey('module.version', '2.0.0');
+        return Config::configKey('module.version', '2.1.0');
     }
 
     /**
@@ -71,7 +75,7 @@ class MgGoGetSsl extends Module
      */
     public function getServiceName($service)
     {
-        return $service;
+        return $service->name;
     }
 
     /**
@@ -407,7 +411,7 @@ class MgGoGetSsl extends Module
     public function uninstall($moduleId, $lastInstance)
     {
         (new \MgGoGetSsl\Service\GoGetSslService())
-            ->uninstalModueCommands();
+            ->uninstalModuleCommands();
 
         $cron = new CronService($this);
         $cron->deleteCronTask($lastInstance);

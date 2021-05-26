@@ -241,5 +241,6 @@ $lang['client_cert_data_not_available'] = "Client cert data not available";
 $lang['brands_with_only_email_validation'] = 'Brands with only email validation';
 $lang['resend_certificate_success'] = 'The certificate has been sent successfully';
 $lang['resend_certificate_error'] = 'Sending the certificate has failed';
+$lang['resend_certificate_empty'] = 'Sending the certificate has failed. Certificate not created';
 $lang['scheduled_cancel_name'] = 'Cancel ModulesGarden GoGetSSL certificate';
 $lang['scheduled_cancel_description'] = 'GoGetSSL certificate cancellation for "Cancel Scheduled Services"';

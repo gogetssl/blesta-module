@@ -171,8 +171,8 @@ label {
   color: white;
   border: none;
   cursor: pointer;
-  font-weight: 500;
-  font-size: 1.6rem;
+  font-weight: 400;
+  font-size: 1.2rem;
   position: relative;
   text-align: center;
   display: inline-block;
@@ -244,8 +244,8 @@ label {
   padding: 7px 20px; }
 
 .button.button--sm {
-  padding: 3px 10px;
-  font-size: 1.4rem; }
+  padding: 4px 10px;
+  font-size: 1.1rem; }
 
 .button.button--sm.loading {
   padding-left: 40px !important; }

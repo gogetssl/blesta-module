@@ -31,9 +31,6 @@ class CSRService
                 'error' => false,
                 'csr'   => $scrOut
             ];
-
-
-            var_dump("result: ".$result);
         }
         catch (\RuntimeException $e)
         {

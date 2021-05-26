@@ -14,6 +14,7 @@ use MgGoGetSsl\Facade\Settings;
 class BlestaService
 {
 
+    const SETTINGS = 'settings';
     const MODULES_TABLE = 'modules';
     const SERVICES_TABLE = 'services';
     const MODULE_ROWS_TABLE = 'module_rows';
@@ -29,6 +30,21 @@ class BlestaService
         } else {
             \Loader::loadComponents($this, ['Record']);
         }
+    }
+
+
+    /**
+     * @return string
+     */
+
+    public function getLanguage()
+    {
+        $result = $this->Record
+            ->select('value')
+            ->from(self::SETTINGS)
+            ->where('key', '=', 'language')
+            ->fetch();
+        return $result->value;
     }
 
     /**
