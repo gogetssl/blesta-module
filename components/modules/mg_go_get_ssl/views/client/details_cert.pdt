@@ -76,7 +76,7 @@
                 <?php echo $this->_('more_info') ?>
             </a>
 
-            <div class='approver-method-content hide'>
+            <div class='approver-method-content' hidden>
                 <?php if ($approverMethod == 'http' || $approverMethod == 'https'): ?>
                     <div class='row row-margin'>
                         <div class='col-sm-4 text-right'>
@@ -259,7 +259,7 @@
             <span class='text'><?php echo $this->_('change_validation_email') ?></span>
         </button>
 
-        <div class='change-validatiom-email hide'>
+        <div class='change-validatiom-email' hidden>
             <form>
                 <?php $domain = reset($domains) ?>
 
@@ -286,7 +286,7 @@
         <span class='text'><?php echo $this->_('revalidate') ?></span>
     </button>
 
-    <div class='revalidate hide'>
+    <div class='revalidate' hidden>
         <form>
             <table class='ssl-conf-table'>
                 <thead>

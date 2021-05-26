@@ -9,7 +9,6 @@ use MgGoGetSsl\Facade\Lang;
  */
 class PackageService
 {
-
     const PACKAGES_TABLE = 'packages';
     const PACKAGE_NAMES_TABLE = 'package_names';
     const PRICINGS_TABLE = 'pricings';
@@ -17,10 +16,13 @@ class PackageService
     const PACKAGE_META_TABLE = 'package_meta';
     const PACKAGE_GROUPS_TABLE = 'package_groups';
     const PACKAGE_GROUP_TABLE = 'package_group';
+    const PACKAGE_GROUP_NAMES = 'package_group_names';
 
     const PACKAGE_STATUS_ACTIVE = 'active';
     const PACKAGE_STATUS_INACTIVE = 'inactive';
     const PACKAGE_STATUS_RESTRICTED = 'restricted';
+
+    private string $language;
 
     /**
      * PackageService constructor
@@ -28,6 +30,7 @@ class PackageService
     public function __construct()
     {
         \Loader::loadComponents($this, ['Record']);
+        $this->language = (new BlestaService())->getLanguage();
     }
 
     /**
@@ -37,6 +40,7 @@ class PackageService
      */
     public function savePackage(array $data)
     {
+
         $this->Record->begin();
 
         if (!isset($data['name']) || empty($data['name'])) {
@@ -88,7 +92,17 @@ class PackageService
                 unset($data['groups']);
             }
 
-            $this->Record->insert(self::PACKAGES_TABLE, $data);
+            $this->Record->insert(self::PACKAGES_TABLE, [
+                'id_format'   => $data['id_format'],
+                'id_value'    => $data['id_value'],
+                'module_id'   => $data['module_id'],
+                'module_row'  => $data['module_row'],
+                'taxable'     => $data['taxable'],
+                'single_term' => $data['single_term'],
+                'status'      => $data['status'],
+                'company_id'  => $data['company_id']
+            ]);
+
             $packageId = $this->Record->lastInsertId();
 
             $this->savePackageName($packageId, $data);
@@ -111,7 +125,6 @@ class PackageService
     public function updatePackage($package, array $data)
     {
         $packageId = is_object($package) ? $package->id : $package;
-
         $this->Record->begin();
 
         try {
@@ -131,10 +144,7 @@ class PackageService
             }
 
             $name = isset($data['name']) ? $data['name'] : null;
-
-            $this->Record
-                ->where('id', '=', $packageId)
-                ->update(self::PACKAGES_TABLE, $data);
+            $status = isset($data['status']) ? $data['status'] : null;
 
             if ($pricingData) {
                 $this->removePackagePricing($packageId);
@@ -149,6 +159,10 @@ class PackageService
             }
             if (!empty($name)) {
                 $this->updatePackageName($packageId, $data);
+            }
+
+            if (!empty($status)) {
+                $this->updatePackageStatus($packageId, $data);
             }
 
 
@@ -188,9 +202,12 @@ class PackageService
      */
     public function getPackages($moduleId = null, $hydratePricing = true, $hydrateMeta = true, $hydrateGroups = true)
     {
+        $language = (new BlestaService())->getLanguage();
         $builder = $this->Record
             ->select()
-            ->from(self::PACKAGES_TABLE);
+            ->from(self::PACKAGES_TABLE)
+            ->innerJoin(self::PACKAGE_NAMES_TABLE, self::PACKAGES_TABLE.'.id', '=', self::PACKAGE_NAMES_TABLE.'.package_id', false)
+            ->where(self::PACKAGE_NAMES_TABLE.'.lang', '=', $language);
 
         if (!empty($moduleId)) {
             $builder->where('module_id', '=', $moduleId);
@@ -198,7 +215,7 @@ class PackageService
 
         $packages = $builder->fetchAll();
 
-        foreach ($packages as &$package) {
+        foreach ($packages as $package) {
             $package->pricing = $hydratePricing ? $this->Record
                 ->select(['pricings.*'])
                 ->from(self::PRICINGS_TABLE)
@@ -234,7 +251,9 @@ class PackageService
         return $this->Record
             ->select()
             ->from(self::PACKAGE_GROUPS_TABLE)
-            ->where('company_id', '=', $companyId)
+            ->innerJoin(self::PACKAGE_GROUP_NAMES, 'package_group_names.package_group_id', '=', 'package_groups.id', false)
+            ->where('package_groups.company_id', '=', $companyId)
+            ->where('package_group_names.lang', '=', $this->language)
             ->fetchAll();
     }
 
@@ -391,12 +410,12 @@ class PackageService
     {
         $this->Record->insert(self::PACKAGE_NAMES_TABLE , [
             'package_id' => $packageId,
-            'lang'       => 'en_us',
+            'lang'       => $this->language,
             'name'       => $data['name'],
         ]);
     }
 
-        /**
+    /**
      * @param int   $packageId
      * @param array $data
      */
@@ -404,9 +423,22 @@ class PackageService
     {
         $this->Record
             ->where('package_id', '=', $packageId)
-            ->where('lang', '=', 'en_us')
+            ->where('lang', '=', $this->language)
             ->update(self::PACKAGE_NAMES_TABLE, [
                 'name' => $data['name'],
+            ]);
+    }
+
+    /**
+     * @param int   $packageId
+     * @param array $data
+     */
+    private function updatePackageStatus($packageId, array $data)
+    {
+        $this->Record
+            ->where('id', '=', $packageId)
+            ->update(self::PACKAGES_TABLE, [
+                'status' => $data['status'],
             ]);
     }
 }

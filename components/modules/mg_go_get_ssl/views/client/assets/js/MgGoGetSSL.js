@@ -85,11 +85,11 @@ function generateCSRModal() {
             <div class="modal-dialog">\n\
                 <div class="modal-content panel panel-primary">\n\
                     <div class="modal-header panel-heading">\n\
+                        <h4 class="modal-title">'+'Generate CSR'+'</h4>\n\
                         <button type="button" class="close" id="closeCrossBtn" data-dismiss="modal">\n\
                             <span aria-hidden="true">&times;</span>\n\
                             <span class="sr-only">Close</span>\n\
                         </button>\n\
-                        <h4 class="modal-title">'+'Generate CSR'+'</h4>\n\
                     </div>\n\
                     <form action="' + url + '" id="modalGenerateCsrForm" method="post">\n\
                     <div class="modal-body panel-body" id="modalgenerateCsrBody">\n\

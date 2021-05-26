@@ -367,7 +367,6 @@ class AdminProcessor
             $this->view->set("service_url", $serviceUrl);
 
         } catch (\RuntimeException $e) {
-
             if($e->getMessage() == Lang::translate('client_cert_data_not_available'))
             {
                 $this->initView('admin-manage-ssl');
@@ -381,7 +380,7 @@ class AdminProcessor
             Log::logError($e->getMessage(), LogService::NAMESPACE_CERT_DETAILS, $e->getTraceAsString());
         } catch (\Exception $e) {
             $error = true;
-            FlashMessage::error(Lang::translate('general_error'));
+            FlashMessage::error($e->getMessage());
             Log::logError($e->getMessage(), LogService::NAMESPACE_CERT_DETAILS, $e->getTraceAsString());
         }
 
@@ -865,17 +864,24 @@ class AdminProcessor
 
             case 'resend_certificate_email':
                 try {
+
                     $certificateData['orderData']['domain']   = $_REQUEST['domain'];
                     $certificateData['orderData']['ca_code']  = $_REQUEST['ca_code'];
                     $certificateData['orderData']['crt_code'] = $_REQUEST['crt_code'];
+
+                    if(empty($certificateData['orderData']['ca_code']) && empty($certificateData['orderData']['crt_code']))
+                    {
+                        $status = 'error';
+                        $message = Lang::translate('resend_certificate_empty');
+                        break;
+                    }
 
                     $blestaService = new BlestaService();
                     $result = $blestaService->resendCertificateEmail($client, $certificateData);
                     $status = $result['status'];
                     $message = $result['message'];
                 } catch (\Exception $e) {
-                    $status = 'error';
-                    $message = Lang::translate('general_error');
+
                 }
                 break;
 
@@ -1033,6 +1039,7 @@ class AdminProcessor
      */
     private function manageModuleChangePackageStatus()
     {
+
         if ($packageId = filter_input(INPUT_GET, 'package_id', FILTER_SANITIZE_NUMBER_INT)) {
             $message = '';
 

@@ -333,9 +333,14 @@ class CertificateProcessor
 
                 case 'resend_certificate_email':
                     try {
+                        if(empty($this->certificateData['orderData']['ca_code']) && empty($this->certificateData['orderData']['crt_code']))
+                        {
+                            $status = 'error';
+                            $message = Lang::translate('resend_certificate_empty');
+                            break;
+                        }
                         $blestaService =  new BlestaService();
                         $result = $blestaService->resendCertificateEmail($this->client, $this->certificateData);
-                        $status = $result['status'];
                         $message = $result['message'];
                     } catch (\Exception $e) {
                         $status = 'error';
