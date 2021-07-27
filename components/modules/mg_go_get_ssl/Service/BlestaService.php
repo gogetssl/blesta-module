@@ -207,6 +207,10 @@ class BlestaService
             throw new \RuntimeException(Lang::translate('client_not_found'));
         }
 
+        if(isset($client->language)) {
+            $lang = $client->language;
+        }
+
         if (isset($client->contact->email)) {
             $to = $client->contact->email;
         }

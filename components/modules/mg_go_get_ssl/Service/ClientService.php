@@ -13,6 +13,7 @@ class ClientService
     const CLIENTS_TABLE = 'clients';
     const CONTACTS_TABLE = 'contacts';
     const CONTACT_NUMBERS = 'contact_numbers';
+    const CLIENT_SETTINGS = 'client_settings';
     const SERVICES = 'services';
 
     /**
@@ -41,9 +42,12 @@ class ClientService
     public function getClient($clientId, $hydrateContact = true, $hydratePhoneNumbers = true)
     {
         $client = $this->Record
-            ->select()
+            ->select(array(
+                'clients.*', 'client_settings.value'=>'language'))
             ->from(self::CLIENTS_TABLE)
-            ->where('id', '=', $clientId)
+            ->innerJoin(self::CLIENT_SETTINGS, self::CLIENT_SETTINGS.'.client_id', '=', self::CLIENTS_TABLE.'.id', false)
+            ->where(self::CLIENTS_TABLE.'.id', '=', $clientId)
+            ->where(self::CLIENT_SETTINGS.'.key', '=', 'language')
             ->fetch();
 
         if ($client && $hydrateContact) {
