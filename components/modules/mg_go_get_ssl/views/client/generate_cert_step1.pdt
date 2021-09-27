@@ -343,7 +343,7 @@
         <br/>
         <div class='col-sm-12'>
             <div class='button_row'>
-                <button id='continueBtn' type='button' class='pull-right btn btn-primary submit'><?php $this->_('continue') ?></button>
+                <button id='continueBtn' type='submit' class='pull-right btn btn-primary submit'><?php $this->_('continue') ?></button>
             </div>
         </div>
         <?php $this->Form->end() ?>

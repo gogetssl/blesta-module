@@ -66,7 +66,7 @@ class MgGoGetSsl extends Module
      */
     public function getVersion()
     {
-        return Config::configKey('module.version', '2.1.0');
+        return Config::configKey('module.version', '2.1.4');
     }
 
     /**

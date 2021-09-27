@@ -7,7 +7,7 @@ return [
     'module' => [
         'namespace'       => 'MgGoGetSsl',
         'system_name'     => 'mg_go_get_ssl',
-        'version'         => '2.1.1',
+        'version'         => '2.1.4',
         'authors'         => [
             [
                 'name' => 'ModulesGarden',

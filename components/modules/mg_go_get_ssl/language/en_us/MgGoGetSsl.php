@@ -234,6 +234,7 @@ $lang['invalid_email_address'] = 'Generate CSR failed: Email Address is incorrec
 $lang['invalid_country_code'] = 'Generate CSR failed: Country code is incorrect';
 $lang['csr_code_generated_successfully'] = 'CSR code has been generated successfully';
 $lang['csr_code_generate_failed'] = 'Generate CSR code has been failed';
+$lang['private_key'] = 'Private Key';
 $lang['csr_code'] = 'CSR (Certificate Signing Request)';
 $lang['approver_method_message'] = 'The message was sent to the email provided during the certificate configuration: ';
 $lang['resend_certificate'] = 'Resend Certificate';

@@ -54,6 +54,12 @@ class GoGetSslService
      */
     public function saveClientCertificateOrderData($serviceId, array $data)
     {
+        $data['privateKey'] = null;
+        if(isset($_SESSION['privateKeyOut']))
+        {
+            $data['privateKey'] = $_SESSION['privateKeyOut'];
+        }
+
         $this->Record
             ->insert(self::GO_GET_SSL_ORDERS_TABLE, [
                 'order_id'   => $data['order_id'],
@@ -63,6 +69,8 @@ class GoGetSslService
                 'data'       => !empty($data) ? serialize($data) : null,
                 'created_at' => (new \DateTime())->format('Y-m-d H:i:s')
             ]);
+
+        unset($_SESSION['privateKeyOut']);
     }
 
     /**
