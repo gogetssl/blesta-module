@@ -145,6 +145,17 @@
     </div>
 <?php endif ?>
 
+<?php if (isset($privateKey) && !empty($privateKey)): ?>
+    <div class='row row-margin'>
+        <div class='col-sm-4 text-right'>
+            <?php echo $this->_('private_key') ?>
+        </div>
+        <div class='col-sm-7'>
+            <textarea style='width: 100%' rows='8'><?php echo $privateKey ?></textarea>
+        </div>
+    </div>
+<?php endif ?>
+
 <?php if (isset($orderData['csr_code']) && !empty($orderData['csr_code'])): ?>
     <div class='row row-margin'>
         <div class='col-sm-4 text-right'>

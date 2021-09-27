@@ -725,6 +725,7 @@ class AdminProcessor
             $this->view->set('domains', $domainsData);
             $this->view->set('serviceId', $service->id);
             $this->view->set('orderData', $orderStatus);
+            $this->view->set('privateKey', $clientCertificateData->privateKey);
             $this->view->set('isBlesta36', (new BlestaService())->isBlesta36());
 
 

@@ -277,7 +277,6 @@ class CertificateProcessor
         }
 
         $orderId = $clientCertificateData->order_id;
-
         $orderStatus = $this->api->getOrderStatus($orderId);
 
         $brand = $this->goGetSslProduct->brand;
@@ -319,6 +318,7 @@ class CertificateProcessor
         $this->setVariable('methods', $methods);
         $this->setVariable('domains', $domainsData);
         $this->setVariable('orderData', $orderStatus);
+        $this->setVariable('privateKey', $clientCertificateData->privateKey);
         $this->setVariable('isBlesta36', (new BlestaService())->isBlesta36());
         $this->setVariable('manageUrl', sprintf('%sservices/manage/%s/', $this->config->base_uri, $this->service->id));
 

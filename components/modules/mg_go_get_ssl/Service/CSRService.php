@@ -75,8 +75,11 @@ class CSRService
 
             if ($privKey)
             {
+                $_SESSION['privKey'] = $privKey;
                 $serviceId = $this->params['serviceId'];
                 openssl_pkey_export($privKey, $pKeyOut);
+
+                $_SESSION['privateKeyOut'] = $pKeyOut;
                 $csr = openssl_csr_new($dn, $privKey);
                 if (!$csr)
                 {
